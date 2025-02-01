@@ -31,7 +31,7 @@ import requests
 from asgiref.sync import async_to_sync
 from fastapi import HTTPException, Request
 from loguru import logger as log
-from osm_fieldwork.basemapper import create_basemap_file
+from app.osm_fieldwork.basemapper import create_basemap_file
 from osm_login_python.core import Auth
 from osm_rawdata.postgres import PostgresClient
 from psycopg import Connection
