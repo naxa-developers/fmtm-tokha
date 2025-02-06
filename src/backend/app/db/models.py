@@ -990,7 +990,7 @@ class DbProject(BaseModel):
     task_num_buildings: Optional[int] = None
     new_geom_type: Optional[DbGeomType] = None
     geo_restrict_distance_meters: Optional[PositiveInt] = None
-    geo_restrict_force_error: Optional[bool] = None
+    geo_restrict_force_error: bool = True
     hashtags: Optional[list[str]] = None
     due_date: Optional[AwareDatetime] = None
     updated_at: Optional[AwareDatetime] = None

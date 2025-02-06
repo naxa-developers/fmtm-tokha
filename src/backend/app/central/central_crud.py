@@ -530,9 +530,8 @@ async def feature_geojson_to_entity_dict(
         entity_label = f"Additional Feature {uuid4()}"
     else:
         properties["status"] = "0"
-        task_id = properties.get("task_id", None)
-        feature_id = feature.get("id", None)
-        entity_label = f"Task {task_id} Feature {feature_id}"
+        feature_id = properties.get("osm_id", None)
+        entity_label = f"House id {feature_id}"
 
     return {
         "label": entity_label,
