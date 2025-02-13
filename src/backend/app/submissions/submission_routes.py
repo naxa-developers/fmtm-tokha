@@ -22,8 +22,7 @@ from io import BytesIO
 from typing import Annotated, Optional
 
 import geojson
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
-from fastapi import APIRouter, Body, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse, Response
 from psycopg import Connection
 
@@ -33,12 +32,9 @@ from app.central import central_crud
 from app.db import postgis_utils
 from app.db.database import db_conn
 from app.db.enums import HTTPStatus
-from app.db.models import DbBackgroundTask, DbTask
-from app.projects import project_crud, project_schemas
-from app.submissions import submission_crud, submission_schemas
 from app.db.models import DbTask
 from app.projects import project_crud
-from app.submissions import submission_crud, submission_deps, submission_schemas
+from app.submissions import submission_crud, submission_schemas
 from app.tasks.task_deps import get_task
 
 router = APIRouter(

@@ -18,7 +18,6 @@
 """Functions for task submissions."""
 
 import json
-import uuid
 from collections import Counter
 from datetime import datetime, timedelta
 from io import BytesIO
@@ -33,14 +32,9 @@ from app.central.central_crud import (
     get_odk_form,
 )
 from app.central.central_deps import get_async_odk_form
-from app.config import settings
-from app.db.enums import BackgroundTaskStatus, HTTPStatus
-from app.db.models import DbBackgroundTask, DbProject, DbSubmissionPhoto
-from app.db.postgis_utils import timestamp
-from app.projects import project_crud, project_deps, project_schemas
-from app.s3 import add_obj_to_bucket
 from app.db.enums import HTTPStatus
 from app.db.models import DbProject
+from app.db.postgis_utils import timestamp
 from app.projects import project_crud
 
 # async def convert_json_to_osm(file_path):
