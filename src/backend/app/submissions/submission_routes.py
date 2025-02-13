@@ -18,14 +18,13 @@
 """Routes associated with data submission to and from ODK Central."""
 
 import json
-import uuid
 from io import BytesIO
 from typing import Annotated, Optional
 
 import geojson
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
+from fastapi import APIRouter, Body, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse, Response
-from loguru import logger as log
 from psycopg import Connection
 
 from app.auth.auth_schemas import ProjectUserDict
@@ -37,6 +36,9 @@ from app.db.enums import HTTPStatus
 from app.db.models import DbBackgroundTask, DbTask
 from app.projects import project_crud, project_schemas
 from app.submissions import submission_crud, submission_schemas
+from app.db.models import DbTask
+from app.projects import project_crud
+from app.submissions import submission_crud, submission_deps, submission_schemas
 from app.tasks.task_deps import get_task
 
 router = APIRouter(
