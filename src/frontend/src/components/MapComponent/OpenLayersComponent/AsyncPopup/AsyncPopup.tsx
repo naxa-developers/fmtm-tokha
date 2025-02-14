@@ -119,7 +119,12 @@ const AsyncPopup = ({
         closePopupFn();
         return;
       }
-      const featureProperties = features[0].getProperties();
+
+      // in the case of cluster-layer, the features are nested within features
+      const featureProperties = features[0]?.getProperties()?.features
+        ? features[0]?.getProperties()?.features[0]?.getProperties()
+        : features[0]?.getProperties();
+
       const { [primaryKey]: primaryKeyValue } = featureProperties;
       if (
         layerIds.includes(primaryKeyValue) ||
