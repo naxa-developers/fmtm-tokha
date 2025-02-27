@@ -9,7 +9,7 @@ type entitiesStatusListType = {
 	osmid: number | undefined;
 	entity_id: string;
 	project_id: number;
-	status: string;
+	status: 'READY' | 'OPENED_IN_ODK' | 'SURVEY_SUBMITTED' | 'MARKED_BAD' | 'VALIDATED';
 	task_id: number;
 };
 
@@ -42,7 +42,7 @@ type newBadGeomType<T> = {
 };
 
 let userLocationCoord: LngLatLike | undefined = $state();
-let selectedEntity: number | null = $state(null);
+let selectedEntity: string | null = $state(null);
 let entitiesShape: Shape;
 let geomShape: Shape;
 let entitiesStatusList: entitiesStatusListType[] = $state([]);
