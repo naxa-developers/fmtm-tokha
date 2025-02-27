@@ -1,4 +1,5 @@
 version = 1
+revision = 1
 requires-python = ">=3.12"
 resolution-markers = [
     "python_full_version < '3.13'",
@@ -271,7 +272,7 @@ name = "click"
 version = "8.1.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "platform_system == 'Windows'" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/96/d3/f04c7bfcf5c1862a2a5b845c6b2b360488cf47af55dfa79c98f6a6bf98b5/click-8.1.7.tar.gz", hash = "sha256:ca9853ad459e787e2192211578cc907e7594e294c7ccc834310722b41b9ca6de", size = 336121 }
 wheels = [
@@ -568,7 +569,7 @@ requires-dist = [
     { name = "httptools", specifier = "==0.6.4" },
     { name = "loguru", specifier = "==0.7.2" },
     { name = "minio", specifier = "==7.2.9" },
-    { name = "osm-fieldwork", specifier = "==0.20.0" },
+    { name = "osm-fieldwork", specifier = "==0.21.0" },
     { name = "osm-login-python", specifier = "==2.0.0" },
     { name = "osm-rawdata", specifier = "==0.4.1" },
     { name = "psycopg", extras = ["pool"], specifier = ">=3.2.3" },
@@ -1025,7 +1026,7 @@ version = "1.6.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
-    { name = "colorama", marker = "platform_system == 'Windows'" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
     { name = "ghp-import" },
     { name = "jinja2" },
     { name = "markdown" },
@@ -1435,7 +1436,7 @@ wheels = [
 
 [[package]]
 name = "osm-fieldwork"
-version = "0.20.0"
+version = "0.21.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -1459,9 +1460,9 @@ dependencies = [
     { name = "shapely" },
     { name = "xmltodict" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/21/20/b6b7e38947f088af2f2990e36802918f966c06c6fa0b5a7be412d9d9234e/osm-fieldwork-0.20.0.tar.gz", hash = "sha256:3c6676d8ea42dedf4e3d08be440ff8d0345aa28c3d28fee48f3c275577650d3d", size = 1487764 }
+sdist = { url = "https://files.pythonhosted.org/packages/53/c2/0cc3f55ba70a649f005d8e48153c07351c86a6faf7172c7aca8874361b04/osm-fieldwork-0.21.0.tar.gz", hash = "sha256:34b2ab64fd703721d6b950d101c54558d67afe76f05887a4c8f6fa9965791bd0", size = 1487787 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/51/fa/d9a6e3fc84ac30c0a6aebdd914d28b2c91989da522aecbff1bfa02b8111a/osm_fieldwork-0.20.0-py3-none-any.whl", hash = "sha256:814dda6d859ce7cd0882c4cb38593968f8adc74120e63c491dd4d03a7d292e70", size = 1513401 },
+    { url = "https://files.pythonhosted.org/packages/17/6e/3d1b6f4653af3d7a5f5704b0808894b776d0648e8f4f6bf62fa0c23cc2fb/osm_fieldwork-0.21.0-py3-none-any.whl", hash = "sha256:04adec7813404500ebab66e574c58fe0ded1dba89f06d2b7412944e370b9fdd7", size = 1513369 },
 ]
 
 [[package]]
@@ -1730,8 +1731,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/39/1b/d0b013bf7d1af7cf0a6a4fce13f5fe5813ab225313755367b36e714a63f8/pycryptodome-3.21.0-cp36-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:18caa8cfbc676eaaf28613637a89980ad2fd96e00c564135bf90bc3f0b34dd93", size = 2254397 },
     { url = "https://files.pythonhosted.org/packages/14/71/4cbd3870d3e926c34706f705d6793159ac49d9a213e3ababcdade5864663/pycryptodome-3.21.0-cp36-abi3-win32.whl", hash = "sha256:280b67d20e33bb63171d55b1067f61fbd932e0b1ad976b3a184303a3dad22764", size = 1775641 },
     { url = "https://files.pythonhosted.org/packages/43/1d/81d59d228381576b92ecede5cd7239762c14001a828bdba30d64896e9778/pycryptodome-3.21.0-cp36-abi3-win_amd64.whl", hash = "sha256:b7aa25fc0baa5b1d95b7633af4f5f1838467f1815442b22487426f94e0d66c53", size = 1812863 },
-    { url = "https://files.pythonhosted.org/packages/25/b3/09ff7072e6d96c9939c24cf51d3c389d7c345bf675420355c22402f71b68/pycryptodome-3.21.0-pp27-pypy_73-manylinux2010_x86_64.whl", hash = "sha256:2cb635b67011bc147c257e61ce864879ffe6d03342dc74b6045059dfbdedafca", size = 1691593 },
-    { url = "https://files.pythonhosted.org/packages/a8/91/38e43628148f68ba9b68dedbc323cf409e537fd11264031961fd7c744034/pycryptodome-3.21.0-pp27-pypy_73-win32.whl", hash = "sha256:4c26a2f0dc15f81ea3afa3b0c87b87e501f235d332b7f27e2225ecb80c0b1cdd", size = 1765997 },
 ]
 
 [[package]]

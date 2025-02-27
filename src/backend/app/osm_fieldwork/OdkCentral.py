@@ -22,6 +22,13 @@
 # Author: Ivan Gayton <ivangayton@gmail.com>
 # Author: Reetta Valimaki <reetta.valimaki8@gmail.com>
 
+# NOTE while there is some unique functionality in this module not available
+# NOTE in getodk/pyodk, for most use cases it would be recommended to use
+# NOTE pyodk instead.
+#
+# NOTE If async functionality is required, then OdkCentralAsync is available,
+# NOTE as pyodk does not support async workflows.
+
 import concurrent.futures
 import json
 import logging
@@ -633,7 +640,7 @@ class OdkForm(OdkCentral):
         self,
         projectId: int,
         xform: str,
-    ):
+    ) -> dict:
         """Get all the details for a form on an ODK Central server.
 
         Args:
@@ -646,7 +653,7 @@ class OdkForm(OdkCentral):
         url = f"{self.base}projects/{projectId}/forms/{xform}"
         result = self.session.get(url, verify=self.verify)
         self.data = result.json()
-        return result
+        return result.json()
 
     def getFullDetails(
         self,
@@ -666,6 +673,28 @@ class OdkForm(OdkCentral):
         self.session.headers.update({"X-Extended-Metadata": "true"})
         result = self.session.get(url, verify=self.verify)
         return result.json()
+
+    def getXml(
+        self,
+        projectId: int,
+        xform: str,
+    ):
+        """Get the form XML from the ODK Central server.
+
+        Args:
+            projectId (int): The ID of the project on ODK Central.
+            xform (str): The XForm to get the details of from ODK Central.
+
+        Returns:
+            (str): The raw XML form.
+        """
+        url = f"{self.base}projects/{projectId}/forms/{xform}.xml"
+        result = self.session.get(url, verify=self.verify)
+
+        if result.status_code != 200:
+            result.raise_for_status()
+
+        return result.text
 
     def listSubmissionBasicInfo(
         self,
@@ -815,6 +844,11 @@ class OdkForm(OdkCentral):
         filename: str,
     ):
         """Fetch a specific attachment by filename from a submission to a form.
+
+        NOTE this function expects the user has not configured external S3 storage.
+        NOTE if S3 storage is configured, the response does not contain the
+        NOTE photo content, but instead an S3 pre-signed URL.
+        NOTE see OdkCentralAsync.OdkForm.getSubmissionAttachmentUrl
 
         Args:
             projectId (int): The ID of the project on ODK Central
@@ -1033,7 +1067,7 @@ class OdkForm(OdkCentral):
 
         Args:
             projectId (int): The ID of the project on ODK Central
-            form_name (str): The XForm to get the details of from ODK Central
+            form_name (str): The user friendly name to provide the form
             data (str, Path, BytesIO): The XForm file path, or BytesIO memory obj
             publish (bool): If the new form should be published.
                 Only valid if form_name is not passed, i.e. a new form.
@@ -1139,7 +1173,7 @@ class OdkForm(OdkCentral):
                 log.warning(json_data)
                 return False
             except json.decoder.JSONDecodeError:
-                log.error("Could not parse response json during form deletion. " f"status_code={result.status_code}")
+                log.error(f"Could not parse response json during form deletion. status_code={result.status_code}")
             finally:
                 return False
 
@@ -1629,7 +1663,7 @@ class OdkDataset(OdkCentral):
 
         if not response.ok:
             if response.status_code == 404:
-                msg = f"Does not exist: project ({projectId}) dataset ({datasetName}) " f"entity ({entityUuid})"
+                msg = f"Does not exist: project ({projectId}) dataset ({datasetName}) entity ({entityUuid})"
                 log.debug(msg)
                 raise requests.exceptions.HTTPError(msg)
             log.debug(f"Failed to delete Entity. Status code: {response.status_code}")
@@ -1701,7 +1735,7 @@ if __name__ == "__main__":
     """
     logging.basicConfig(
         level=log_level,
-        format=("%(asctime)s.%(msecs)03d [%(levelname)s] " "%(name)s | %(funcName)s:%(lineno)d | %(message)s"),
+        format=("%(asctime)s.%(msecs)03d [%(levelname)s] %(name)s | %(funcName)s:%(lineno)d | %(message)s"),
         datefmt="%y-%m-%d %H:%M:%S",
         stream=sys.stdout,
     )

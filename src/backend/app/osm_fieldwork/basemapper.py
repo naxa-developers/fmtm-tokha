@@ -173,7 +173,6 @@ def format_url(site: dict, tile: tuple) -> Optional[str]:
         str: The formatted URL or None if the source is unsupported.
     """
     source_url = site["url"]
-    suffix = site["suffix"]
     if site.get("xy"):
         # z/x/y format download, move to z/y/x structure on disk
         url_path = f"{tile[2]}/{tile[0]}/{tile[1]}"
@@ -196,7 +195,7 @@ def format_url(site: dict, tile: tuple) -> Optional[str]:
         case "oam":
             return source_url % url_path
         case "custom":
-            return f"{source_url % url_path}.{suffix}"
+            return source_url % url_path
         case _:
             log.error(f"Unsupported source: {site['source']}")
             return None
@@ -613,7 +612,6 @@ def create_basemap_file(
 
     suffix = Path(outfile).suffix.lower()
     image_format = basemap.sources[source].get("suffix", "jpg")
-
     log.debug(f"Basemap output format: {suffix} | Image format: {image_format}")
 
     if any(substring in suffix for substring in ["sqlite", "mbtiles"]):
@@ -688,9 +686,7 @@ def main():
         "--boundary",
         nargs="*",
         required=True,
-        help=(
-            "The boundary for the area you want. " "Accepts path to geojson file or bbox string. " "Format min_x min_y max_x max_y"
-        ),
+        help=("The boundary for the area you want. Accepts path to geojson file or bbox string. Format min_x min_y max_x max_y"),
     )
     parser.add_argument("-t", "--tms", help="Custom TMS URL")
     parser.add_argument("--xy", action="store_true", help="Swap the X & Y coordinates when using a custom TMS")

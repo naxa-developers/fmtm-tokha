@@ -21,12 +21,12 @@ export const SubmissionService = (url: string) => {
   };
 };
 
-export const GetSubmissionPhotosService = (url: string) => {
+export const GetSubmissionPhotosService = (url: string, params: { project_id: number }) => {
   return async (dispatch: AppDispatch) => {
     dispatch(SubmissionActions.SetSubmissionPhotosLoading(true));
     const getSubmissionPhotos = async (url: string) => {
       try {
-        const response: AxiosResponse<{ image_urls: string[] }> = await axios.get(url);
+        const response: AxiosResponse<{ image_urls: string[] }> = await axios.get(url, { params });
         dispatch(SubmissionActions.SetSubmissionPhotos(response?.data?.image_urls));
         dispatch(SubmissionActions.SetSubmissionPhotosLoading(false));
       } catch (error) {
