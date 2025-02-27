@@ -187,7 +187,7 @@
 			toggleActionModal(null);
 		}
 	}
-
+	// label
 	$effect(() => {
 		if (map) {
 			map.on('click', handleMapClick);
