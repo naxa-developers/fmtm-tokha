@@ -29,9 +29,9 @@ from uuid import uuid4
 import pandas as pd
 from python_calamine.pandas import pandas_monkeypatch
 
-from app.osm_fieldwork.form_components.choice_fields import choices_df, digitisation_choices_df
-from app.osm_fieldwork.form_components.digitisation_fields import digitisation_df
-from app.osm_fieldwork.form_components.mandatory_fields import DbGeomType, create_survey_df, entities_df, meta_df, settings_df
+from osm_fieldwork.form_components.choice_fields import choices_df, digitisation_choices_df
+from osm_fieldwork.form_components.digitisation_fields import digitisation_df
+from osm_fieldwork.form_components.mandatory_fields import DbGeomType, create_survey_df, entities_df, meta_df
 
 log = logging.getLogger(__name__)
 
@@ -49,7 +49,7 @@ DEFAULT_LANGUAGES = {
     "spanish": "es",
     "swahili": "sw",
     "nepali": "ne",
-    "portuguese": "pt-br",
+    "portuguese": "pt-BR",
 }
 
 # def handle_translations(
@@ -107,7 +107,6 @@ def standardize_xlsform_sheets(xlsform: dict) -> dict:
         :param base_columns: List of base columns to check (e.g., 'label', 'hint', 'required_message').
         :return: Updated DataFrame with standardized and complete language columns.
         """
-        print("data frame sheet", df)
         base_columns = ["label", "hint", "required_message"]
         df.columns = df.columns.str.lower()
         existing_columns = df.columns.tolist()
@@ -115,13 +114,11 @@ def standardize_xlsform_sheets(xlsform: dict) -> dict:
         # Map existing columns and standardize their names
         for col in existing_columns:
             standardized_col = col
-            print("standardized_col",standardized_col)
             for base_col in base_columns:
                 if col.startswith(f"{base_col}::"):
                     match = re.match(rf"{base_col}::\s*(\w+)", col)
                     if match:
                         lang_name = match.group(1)
-                        print("lang_nameee=========", lang_name)
                         if lang_name in DEFAULT_LANGUAGES:
                             standardized_col = f"{base_col}::{lang_name}({DEFAULT_LANGUAGES[lang_name]})"
 
@@ -167,6 +164,7 @@ def create_survey_group() -> dict[str, pd.DataFrame]:
             "label::swahili(sw)": ["maswali_ya_utafiti"],
             "label::french(fr)": ["questions_enquête"],
             "label::spanish(es)": ["preguntas_de_encuesta"],
+            "label::portuguese(pt-BR)": ["perguntas_de_pesquisa"],
             "relevant": "(${new_feature} != '') or (${building_exists} = 'yes')",
         }
     )
@@ -247,8 +245,8 @@ def append_select_one_from_file_row(df: pd.DataFrame, entity_name: str) -> pd.Da
         {
             "type": [f"select_one_from_file {entity_name}.csv"],
             "name": [entity_name],
-            "label::english(en)": [entity_name],
             "appearance": ["map"],
+            "label::english(en)": [entity_name],
             "label::swahili(sw)": [entity_name],
             "label::french(fr)": [entity_name],
             "label::spanish(es)": [entity_name],
@@ -259,12 +257,9 @@ def append_select_one_from_file_row(df: pd.DataFrame, entity_name: str) -> pd.Da
     coordinates_row = pd.DataFrame(
         {
             "type": ["calculate"],
-            "name": ["additional_geometry"],
+            "name": [f"{entity_name}_geom"],
             "calculation": [f"instance('{entity_name}')/root/item[name=${{{entity_name}}}]/geometry"],
-            "label::english(en)": ["additional_geometry"],
-            "label::swahili(sw)": ["additional_geometry"],
-            "label::french(fr)": ["additional_geometry"],
-            "label::spanish(es)": ["additional_geometry"],
+            "label::english(en)": [f"{entity_name}_geom"],  # translations not needed, calculated field
         }
     )
     # Insert the new row into the DataFrame
@@ -275,7 +270,7 @@ def append_select_one_from_file_row(df: pd.DataFrame, entity_name: str) -> pd.Da
 
 async def append_mandatory_fields(
     custom_form: BytesIO,
-    form_category: str,
+    form_name: str = f"fmtm_{uuid4()}",
     additional_entities: list[str] = None,
     existing_id: str = None,
     new_geom_type: DbGeomType = DbGeomType.POINT,
@@ -284,7 +279,7 @@ async def append_mandatory_fields(
 
     Args:
         custom_form(BytesIO): the XLSForm data uploaded, wrapped in BytesIO.
-        form_category(str): the form category name (in form_title and description).
+        form_name(str): the friendly form name in ODK web view.
         additional_entities(list[str]): add extra select_one_from_file fields to
             reference an additional Entity list (set of geometries).
             The values should be plural, so that 's' will be stripped in the
@@ -309,13 +304,6 @@ async def append_mandatory_fields(
     log.debug("Merging survey sheet XLSForm data")
     survey_df = create_survey_df(new_geom_type)
     custom_sheets["survey"] = merge_dataframes(survey_df, custom_sheets.get("survey"), digitisation_df)
-    # Hardcode the form_category value for the start instructions
-    if form_category.endswith("s"):
-        # Plural to singular
-        form_category = form_category[:-1]
-    form_category_row = custom_sheets["survey"].loc[custom_sheets["survey"]["name"] == "form_category"]
-    if not form_category_row.empty:
-        custom_sheets["survey"].loc[custom_sheets["survey"]["name"] == "form_category", "calculation"] = f"once('{form_category}')"
 
     # Ensure the 'choices' sheet exists in custom_sheets
     if "choices" not in custom_sheets or custom_sheets["choices"] is None:
@@ -327,7 +315,6 @@ async def append_mandatory_fields(
     # Append or overwrite 'entities' and 'settings' sheets
     log.debug("Overwriting entities and settings XLSForm sheets")
     custom_sheets["entities"] = entities_df
-    # custom_sheets["settings"] = settings_df
     if "entities" not in custom_sheets:
         msg = "Entities sheet is required in XLSForm!"
         log.error(msg)
@@ -340,12 +327,12 @@ async def append_mandatory_fields(
     # Set the 'version' column to the current timestamp (if 'version' column exists in 'settings')
     xform_id = existing_id if existing_id else uuid4()
     current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    log.debug(f"Setting xFormId = {xform_id} | form title = {form_category} | version = {current_datetime}")
+    log.debug(f"Setting xFormId = {xform_id} | version = {current_datetime}")
     custom_sheets["settings"]["version"] = current_datetime
     custom_sheets["settings"]["form_id"] = xform_id
-    custom_sheets["settings"]["form_title"] = form_category
+    custom_sheets["settings"]["form_title"] = form_name
     if "default_language" not in custom_sheets["settings"]:
-        custom_sheets["settings"]["default_language"] = "english(en)"
+        custom_sheets["settings"]["default_language"] = "en"
 
     # Append select_one_from_file for additional entities
     if additional_entities:
