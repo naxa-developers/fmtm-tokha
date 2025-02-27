@@ -515,7 +515,7 @@ async def convert_odk_submission_json_to_geojson(
                     "is_manual_geopoint": True,
                     "description": "Manually placed gate point",
                     "accuracy": manual_geopoint["properties"]["accuracy"],
-                    "xid": data["xid"] if "xid" in data else None,  # Link to submission
+                    "house_id": data["xid"] if "xid" in data else None,  # Link to submission
                 },
             )
             all_features.append(manual_geopoint_feature)
