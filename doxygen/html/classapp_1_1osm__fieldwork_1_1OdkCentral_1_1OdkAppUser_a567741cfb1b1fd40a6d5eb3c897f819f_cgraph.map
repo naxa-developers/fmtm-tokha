@@ -1,0 +1,6 @@
+<map id="app.osm_fieldwork.OdkCentral.OdkAppUser.__init__" name="app.osm_fieldwork.OdkCentral.OdkAppUser.__init__">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,29,232,69"/>
+<area shape="poly" id="edge1_Node000001_Node000001" title=" " alt="" coords="69,30,66,20,74,10,92,5,119,3,150,5,166,13,164,18,148,11,119,8,93,10,77,15,71,21,74,28"/>
+<area shape="rect" id="Node000002" href="$classapp_1_1auth_1_1auth__schemas_1_1AuthUser.html#a0bc464b177fba1eee8f94b90028e6869" title=" " alt="" coords="280,29,491,69"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="232,47,266,47,266,52,232,52"/>
+</map>

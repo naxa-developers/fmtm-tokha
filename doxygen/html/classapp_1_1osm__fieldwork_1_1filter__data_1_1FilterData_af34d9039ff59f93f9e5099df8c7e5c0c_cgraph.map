@@ -1,0 +1,7 @@
+<map id="app.osm_fieldwork.filter_data.FilterData.__init__" name="app.osm_fieldwork.filter_data.FilterData.__init__">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,37,184,77"/>
+<area shape="rect" id="Node000002" href="$classapp_1_1osm__fieldwork_1_1data__models_1_1validate_1_1ValidateModel.html#af05e359972f3ad6e826d15fd12aee0d1" title=" " alt="" coords="232,5,503,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="184,44,218,40,218,46,184,50"/>
+<area shape="rect" id="Node000003" href="$classapp_1_1osm__fieldwork_1_1filter__data_1_1FilterData.html#a5d7646ff08f344bf98709d87f8c5ca47" title=" " alt="" coords="278,69,457,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="184,65,264,75,264,80,184,70"/>
+</map>

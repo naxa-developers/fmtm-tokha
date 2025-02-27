@@ -1,0 +1,7 @@
+<map id="app.osm_fieldwork.form_components.mandatory_fields.DbGeomType" name="app.osm_fieldwork.form_components.mandatory_fields.DbGeomType">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,119,181,253"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="46,5,77,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="74,84,81,118,76,119,69,85"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="101,5,152,71"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="119,85,111,119,106,118,114,83"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="app.osm_fieldwork.yamlfile.YamlFile" name="app.osm_fieldwork.yamlfile.YamlFile">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,119,204,339"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="77,5,132,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="107,84,107,119,102,119,102,84"/>
+</map>

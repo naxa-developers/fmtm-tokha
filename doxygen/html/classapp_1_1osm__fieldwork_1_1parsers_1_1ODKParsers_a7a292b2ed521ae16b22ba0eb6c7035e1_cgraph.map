@@ -1,0 +1,19 @@
+<map id="app.osm_fieldwork.parsers.ODKParsers.CSVparser" name="app.osm_fieldwork.parsers.ODKParsers.CSVparser">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,69,207,109"/>
+<area shape="rect" id="Node000002" href="$classapp_1_1osm__fieldwork_1_1convert_1_1Convert.html#a884dab99ddf508e1911bf46ea69af6f8" title=" " alt="" coords="255,101,457,141"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="207,100,242,104,241,109,207,105"/>
+<area shape="rect" id="Node000008" href="$classapp_1_1osm__fieldwork_1_1convert_1_1Convert.html#a33f6c9ac024491590ae5aab674852bf5" title=" " alt="" coords="255,37,457,77"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="207,74,241,69,242,75,207,79"/>
+<area shape="rect" id="Node000003" href="$classapp_1_1osm__fieldwork_1_1convert_1_1Convert.html#a09da81a639b40a6c424f798d55dd77cb" title=" " alt="" coords="507,5,710,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="428,99,456,87,480,71,504,55,521,48,523,53,507,60,483,76,459,92,430,104"/>
+<area shape="rect" id="Node000004" href="$classapp_1_1osm__fieldwork_1_1yamlfile_1_1YamlFile.html#a1d181028fdf953b2157d081e6f4bae47" title=" " alt="" coords="505,69,712,109"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="457,106,491,101,492,107,458,111"/>
+<area shape="rect" id="Node000005" href="$classapp_1_1osm__fieldwork_1_1convert_1_1Convert.html#a2aa56f2bb27bbff074dfa7d604b029e9" title=" " alt="" coords="507,133,710,173"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="458,132,494,136,493,141,457,137"/>
+<area shape="rect" id="Node000006" href="$classapp_1_1osm__fieldwork_1_1convert_1_1Convert.html#a2bd06a8ca14b83ccd992d4194ea14a2b" title=" " alt="" coords="507,197,710,237"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="402,139,506,183,528,190,526,195,504,188,400,144"/>
+<area shape="rect" id="Node000007" href="$classapp_1_1osm__fieldwork_1_1convert_1_1Convert.html#a58a0f28d45931e31aef1fb4328c7f792" title=" " alt="" coords="760,197,963,237"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="710,215,746,215,746,220,710,220"/>
+<area shape="poly" id="edge8_Node000008_Node000003" title=" " alt="" coords="457,42,493,37,494,43,458,47"/>
+<area shape="poly" id="edge9_Node000008_Node000004" title=" " alt="" coords="458,68,492,72,491,77,457,73"/>
+</map>

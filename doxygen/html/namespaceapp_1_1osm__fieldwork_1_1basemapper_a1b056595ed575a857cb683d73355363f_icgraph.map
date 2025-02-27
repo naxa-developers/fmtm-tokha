@@ -1,0 +1,5 @@
+<map id="app.osm_fieldwork.basemapper.dlthread" name="app.osm_fieldwork.basemapper.dlthread">
+<area shape="rect" id="Node000001" title=" " alt="" coords="287,13,573,38"/>
+<area shape="rect" id="Node000002" href="$classapp_1_1osm__fieldwork_1_1basemapper_1_1BaseMapper.html#a55f401cea4138a38fa0349e92e7a4923" title=" " alt="" coords="5,5,239,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="273,28,239,28,239,23,273,23"/>
+</map>

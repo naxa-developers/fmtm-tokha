@@ -1,0 +1,7 @@
+<map id="app.osm_fieldwork.basemapper.create_basemap_file" name="app.osm_fieldwork.basemapper.create_basemap_file">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,280,45"/>
+<area shape="rect" id="Node000002" href="$namespaceapp_1_1osm__fieldwork_1_1basemapper.html#ae0bb73cfbcaff24edfc991bfe87ed2f9" title=" " alt="" coords="328,5,583,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="280,23,314,23,314,28,280,28"/>
+<area shape="rect" id="Node000003" href="$namespaceapp_1_1osm__fieldwork_1_1basemapper.html#a1735b888ab5b872579dd1faa5a628ba5" title=" " alt="" coords="631,5,897,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="583,23,617,23,617,28,583,28"/>
+</map>

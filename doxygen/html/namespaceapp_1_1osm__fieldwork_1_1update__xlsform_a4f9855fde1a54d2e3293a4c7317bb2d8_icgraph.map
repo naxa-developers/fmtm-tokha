@@ -1,0 +1,7 @@
+<map id="app.osm_fieldwork.update_xlsform.create_survey_group" name="app.osm_fieldwork.update_xlsform.create_survey_group">
+<area shape="rect" id="Node000001" title=" " alt="" coords="559,5,777,45"/>
+<area shape="rect" id="Node000002" href="$namespaceapp_1_1osm__fieldwork_1_1update__xlsform.html#a22643ea67060ca1441c87215bbdb9f03" title=" " alt="" coords="304,5,511,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="545,28,511,28,511,23,545,23"/>
+<area shape="rect" id="Node000003" href="$namespaceapp_1_1osm__fieldwork_1_1update__xlsform.html#ac54380b671867907df5d2bac5dd1d268" title=" " alt="" coords="5,5,256,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="290,28,256,28,256,23,290,23"/>
+</map>

@@ -1,0 +1,10 @@
+<map id="app.osm_fieldwork.basemapper.tileid_from_zyx_dir_path" name="app.osm_fieldwork.basemapper.tileid_from_zyx_dir_path">
+<area shape="rect" id="Node000001" title=" " alt="" coords="945,22,1212,62"/>
+<area shape="rect" id="Node000002" href="$namespaceapp_1_1osm__fieldwork_1_1basemapper.html#ae0bb73cfbcaff24edfc991bfe87ed2f9" title=" " alt="" coords="643,22,897,62"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="931,45,898,45,898,39,931,39"/>
+<area shape="rect" id="Node000003" href="$namespaceapp_1_1osm__fieldwork_1_1basemapper.html#ae0e307720aac69f4dde9db3d6dfc38d5" title=" " alt="" coords="320,22,595,62"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="629,45,595,45,595,39,629,39"/>
+<area shape="rect" id="Node000004" href="$namespaceapp_1_1osm__fieldwork_1_1basemapper.html#afeb37d85e22afaf8f252c1437096c988" title=" " alt="" coords="5,29,272,55"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="306,45,272,45,272,39,306,39"/>
+<area shape="poly" id="edge4_Node000004_Node000004" title=" " alt="" coords="195,22,194,17,185,12,139,8,104,10,86,15,82,20,91,27,88,31,77,21,83,11,103,5,139,3,186,7,198,13,200,20"/>
+</map>

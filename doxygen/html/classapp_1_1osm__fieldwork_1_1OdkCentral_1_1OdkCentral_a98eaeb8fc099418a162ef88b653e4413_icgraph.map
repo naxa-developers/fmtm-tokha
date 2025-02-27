@@ -1,0 +1,7 @@
+<map id="app.osm_fieldwork.OdkCentral.OdkCentral.findProject" name="app.osm_fieldwork.OdkCentral.OdkCentral.findProject">
+<area shape="rect" id="Node000001" title=" " alt="" coords="280,37,507,77"/>
+<area shape="rect" id="Node000002" href="$classapp_1_1osm__fieldwork_1_1OdkCentral_1_1OdkCentral.html#adefac7e6486bc637ba5b91d75854f2c2" title=" " alt="" coords="5,5,232,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="266,45,232,41,233,36,267,40"/>
+<area shape="rect" id="Node000003" href="$classapp_1_1osm__fieldwork_1_1OdkCentral_1_1OdkCentral.html#ab9da94b27a1ea64f9a1fd74212cb7580" title=" " alt="" coords="5,69,232,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="267,75,233,79,232,73,266,69"/>
+</map>

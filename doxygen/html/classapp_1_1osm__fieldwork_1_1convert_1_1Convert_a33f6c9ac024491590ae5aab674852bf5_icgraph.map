@@ -1,0 +1,11 @@
+<map id="app.osm_fieldwork.convert.Convert.convertMultiple" name="app.osm_fieldwork.convert.Convert.convertMultiple">
+<area shape="rect" id="Node000001" title=" " alt="" coords="256,101,459,141"/>
+<area shape="rect" id="Node000002" href="$classapp_1_1osm__fieldwork_1_1convert_1_1Convert.html#a98a2e98520db58a1e20b6806ed0f07ae" title=" " alt="" coords="5,5,208,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="299,98,207,60,173,48,175,43,209,55,301,93"/>
+<area shape="rect" id="Node000003" href="$classapp_1_1osm__fieldwork_1_1parsers_1_1ODKParsers.html#a7a292b2ed521ae16b22ba0eb6c7035e1" title=" " alt="" coords="6,69,207,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="242,109,207,105,208,100,243,104"/>
+<area shape="rect" id="Node000004" href="$classapp_1_1osm__fieldwork_1_1parsers_1_1ODKParsers.html#abfbebf2107120b9b83492165ee295178" title=" " alt="" coords="6,133,207,173"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="243,139,208,143,207,138,242,133"/>
+<area shape="rect" id="Node000005" href="$classapp_1_1osm__fieldwork_1_1parsers_1_1ODKParsers.html#aacf875898e26d7d8844c213e02d0cdc2" title=" " alt="" coords="6,197,207,237"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="301,150,209,188,175,200,173,195,207,183,299,145"/>
+</map>

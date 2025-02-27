@@ -1,0 +1,5 @@
+<map id="app.osm_fieldwork.form_components.mandatory_fields.create_survey_df" name="app.osm_fieldwork.form_components.mandatory_fields.create_survey_df">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,189,60"/>
+<area shape="rect" id="Node000002" href="$namespaceapp_1_1osm__fieldwork_1_1form__components_1_1mandatory__fields.html#aed1b9fb102542d2089995d875671e9a5" title=" " alt="" coords="237,5,447,60"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="189,30,224,30,224,35,189,35"/>
+</map>

@@ -1,0 +1,12 @@
+<map id="app.osm_fieldwork.osmfile.OsmFile.write" name="app.osm_fieldwork.osmfile.OsmFile.write">
+<area shape="rect" id="Node000001" title=" " alt="" coords="504,37,705,77"/>
+<area shape="poly" id="edge5_Node000001_Node000001" title=" " alt="" coords="647,26,632,19,605,16,581,18,566,23,561,29,564,36,559,38,556,28,563,18,580,13,605,11,633,14,649,21"/>
+<area shape="rect" id="Node000002" href="$classapp_1_1osm__fieldwork_1_1osmfile_1_1OsmFile.html#a25bad8895d2a26cd90229f6992974f53" title=" " alt="" coords="255,5,456,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="490,45,456,41,457,36,491,40"/>
+<area shape="rect" id="Node000004" href="$classapp_1_1osm__fieldwork_1_1osmfile_1_1OsmFile.html#a1e83945e3adb7f7ffe4520f6a3c1b98f" title=" " alt="" coords="255,69,456,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="491,75,457,79,456,74,490,69"/>
+<area shape="rect" id="Node000003" href="$classapp_1_1osm__fieldwork_1_1osmfile_1_1OsmFile.html#af355d6332ea1fab8c3d5c7b22f2cdb1d" title=" " alt="" coords="5,5,207,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="241,28,207,28,207,23,241,23"/>
+<area shape="rect" id="Node000005" href="$classapp_1_1osm__fieldwork_1_1osmfile_1_1OsmFile.html#a7756a8ef2c3fce14f3b43c10035bdde0" title=" " alt="" coords="5,69,207,109"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="241,92,207,92,207,87,241,87"/>
+</map>

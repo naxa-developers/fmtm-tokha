@@ -1,0 +1,15 @@
+<map id="app.osm_fieldwork.support.OutSupport.WriteData" name="app.osm_fieldwork.support.OutSupport.WriteData">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,165,208,205"/>
+<area shape="rect" id="Node000002" href="$classapp_1_1osm__fieldwork_1_1support_1_1OutSupport.html#a27249e70987dec9d1a7735239c1b3e43" title=" " alt="" coords="256,5,459,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="124,163,179,110,216,81,255,55,268,48,270,53,257,60,219,85,183,114,128,167"/>
+<area shape="rect" id="Node000003" href="$classapp_1_1osm__fieldwork_1_1support_1_1OutSupport.html#af468b13ca94bac3aa6fe41dfb89d6b0e" title=" " alt="" coords="256,69,459,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="151,163,255,119,276,111,278,116,257,124,153,168"/>
+<area shape="rect" id="Node000004" href="$classapp_1_1osm__fieldwork_1_1support_1_1OutSupport.html#aabfd6398504e6bbd44639b0f88468f1e" title=" " alt="" coords="256,133,459,173"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="208,170,242,165,243,171,208,175"/>
+<area shape="rect" id="Node000005" href="$classapp_1_1osm__fieldwork_1_1support_1_1OutSupport.html#ab9a9a05a70317390682006c2be1467d2" title=" " alt="" coords="256,197,459,237"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="208,196,243,200,242,205,208,201"/>
+<area shape="rect" id="Node000006" href="$classapp_1_1osm__fieldwork_1_1support_1_1OutSupport.html#ac17619f581047af6b0bb6e8035f5784c" title=" " alt="" coords="256,261,459,301"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="153,203,257,247,278,254,276,259,255,252,151,208"/>
+<area shape="rect" id="Node000007" href="$classapp_1_1osm__fieldwork_1_1support_1_1OutSupport.html#a4ba739ffe3b5b84ec0378bc162e26ceb" title=" " alt="" coords="256,325,459,365"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="128,204,183,257,219,286,257,311,270,317,268,322,255,316,216,290,179,261,124,207"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="app.osm_fieldwork.basemapper.BytesIOBoundaryHandler" name="app.osm_fieldwork.basemapper.BytesIOBoundaryHandler">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,133,231,233"/>
+<area shape="rect" id="Node000002" href="$classapp_1_1osm__fieldwork_1_1basemapper_1_1BoundaryHandler.html" title=" " alt="" coords="5,5,231,85"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="121,99,121,133,115,133,115,99"/>
+</map>
