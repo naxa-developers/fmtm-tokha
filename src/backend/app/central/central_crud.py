@@ -509,7 +509,6 @@ async def convert_odk_submission_json_to_geojson(
             }
             # Add manual_geopoint as a separate feature
             manual_geopoint_feature = geojson.Feature(
-                id="manual_geopoint",
                 geometry=manual_geopoint_geom,
                 properties={
                     "is_manual_geopoint": True,
