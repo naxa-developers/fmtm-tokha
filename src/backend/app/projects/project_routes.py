@@ -919,7 +919,7 @@ async def generate_files(
     """
     project = project_user_dict.get("project")
     project_id = project.id
-    form_category = project.xform_category
+    form_name = project.xform_category
     new_geom_type = project.new_geom_type
 
     log.debug(f"Generating additional files for project: {project.id}")
@@ -930,23 +930,23 @@ async def generate_files(
         # Validate uploaded form
         await central_crud.validate_and_update_user_xlsform(
             xlsform=xlsform_upload,
-            form_category=form_category,
+            form_name=form_name,
             additional_entities=additional_entities,
             new_geom_type=new_geom_type,
         )
         xlsform = xlsform_upload
 
     else:
-        log.debug(f"Using default XLSForm for category: '{form_category}'")
+        log.debug(f"Using default XLSForm for category: '{form_name}'")
 
-        form_filename = XLSFormType(form_category).name
+        form_filename = XLSFormType(form_name).name
         xlsform_path = f"{xlsforms_path}/{form_filename}.xls"
         with open(xlsform_path, "rb") as f:
             xlsform = BytesIO(f.read())
 
     xform_id, project_xlsform = await central_crud.append_fields_to_user_xlsform(
         xlsform=xlsform,
-        form_category=form_category,
+        form_name=form_name,
         additional_entities=additional_entities,
         new_geom_type=new_geom_type,
     )

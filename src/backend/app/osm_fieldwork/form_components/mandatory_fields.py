@@ -33,7 +33,7 @@ Modules and functionalities:
     - `warmup` for collecting initial location.
     - `feature` for selecting map geometry from predefined options.
     - `new_feature` for capturing GPS coordinates of new map features.
-    - Calculated fields such as `form_category`, `xid`, `xlocation`, `status`, and others.
+    - Calculated fields such as `xid`, `xlocation`, `status`, and others.
 - **Entities Sheet**: Defines entity management rules to handle mapping tasks dynamically.
     - Includes rules for entity creation and updates with user-friendly labels.
 - **Settings Sheet**: Sets the form ID, version, and configuration options.
@@ -85,11 +85,11 @@ def get_mandatory_fields(new_geom_type: DbGeomType):
             "type": "note",
             "name": "instructions",
             "label::english(en)": """Welcome ${username}. This survey form was generated
-                                by HOT's FMTM to record ${form_category} map features.""",
-            "label::nepali(ne)": """स्वागत छ ${username}। ${form_category} नक्सा Data रेकर्ड गर्न HOT को FMTM द्वारा
+                                by HOT's FMTM to record map features.""",
+            "label::nepali(ne)": """स्वागत छ ${username}। नक्सा Data रेकर्ड गर्न HOT को FMTM द्वारा
                                 यो सर्वेक्षण फारम उत्पन्न भएको थियो।""",
-            "label::portuguese(pt-br)": """Bem-vindo ${username}. Este formulário de pesquisa foi gerado
-                                pelo FMTM do HOT para registrar os recursos do mapa ${form_category}.""",
+            "label::portuguese(pt-BR)": """Bem-vindo ${username}. Este formulário de pesquisa foi gerado
+                                pelo FMTM do HOT para registrar os recursos do mapa.""",
         },
         {"notes": "Fields essential to FMTM"},
         {"type": "start-geopoint", "name": "warmup", "notes": "collects location on form start"},
@@ -97,7 +97,7 @@ def get_mandatory_fields(new_geom_type: DbGeomType):
             "type": "select_one_from_file features.csv",
             "name": "feature",
             "label::english(en)": "Geometry",
-            "label::portuguese(pt-br)": "geometria",
+            "label::portuguese(pt-BR)": "geometria",
             "appearance": "map",
         },
         {
@@ -105,25 +105,10 @@ def get_mandatory_fields(new_geom_type: DbGeomType):
             "name": "new_feature",
             "label::english(en)": "Please draw a new geometry",
             "label::nepali(ne)": "कृपया नयाँ ज्यामिति कोर्नुहोस्।",
-            "label::portuguese(pt-br)": "Por favor, desenhe uma nova geometria",
+            "label::portuguese(pt-BR)": "Por favor, desenhe uma nova geometria",
             "appearance": "placement-map",
             "relevant": "${feature}= ''",
             "required": "yes",
-        },
-        {
-            "type": "text",
-            "name": "taskid",
-            "label::english(en)": "Task ID",
-            "label::nepali(ne)": "",
-            "label::portuguese(pt-br)": "",
-            "save_to": "task_id",
-        },
-        {
-            "type": "calculate",
-            "name": "form_category",
-            "label::english(en)": "FMTM form category",
-            "appearance": "minimal",
-            "calculation": "once('Unkown')",
         },
         {
             "type": "calculate",
@@ -148,7 +133,6 @@ def get_mandatory_fields(new_geom_type: DbGeomType):
             "notes": "e.g. FMTM Task ID",
             "label::english(en)": "Task ID",
             "appearance": "minimal",
-            "relevant": "${taskid} = '' ",
             "calculation": "if(${feature} != '', instance('features')/root/item[name=${feature}]/task_id, '')",
             "save_to": "task_id",
         },
@@ -171,7 +155,7 @@ def get_mandatory_fields(new_geom_type: DbGeomType):
             "name": "building_exists",
             "label::english(en)": "Does this feature exist?",
             "label::nepali(ne)": "के यो भवन अवस्थित छ?",
-            "label::portuguese(pt-br)": "Esse recurso existe?",
+            "label::portuguese(pt-BR)": "Esse recurso existe?",
             "relevant": "${feature} != '' ",
         },
         {

@@ -320,7 +320,7 @@ async def read_and_test_xform(input_data: BytesIO) -> None:
 
 async def append_fields_to_user_xlsform(
     xlsform: BytesIO,
-    form_category: str = "buildings",
+    form_name: str = "buildings",
     additional_entities: list[str] = None,
     existing_id: str = None,
     new_geom_type: DbGeomType = DbGeomType.POINT,
@@ -329,7 +329,7 @@ async def append_fields_to_user_xlsform(
     log.debug("Appending mandatory FMTM fields to XLSForm")
     return await append_mandatory_fields(
         xlsform,
-        form_category=form_category,
+        form_name=form_name,
         additional_entities=additional_entities,
         existing_id=existing_id,
         new_geom_type=new_geom_type,
@@ -338,7 +338,7 @@ async def append_fields_to_user_xlsform(
 
 async def validate_and_update_user_xlsform(
     xlsform: BytesIO,
-    form_category: str = "buildings",
+    form_name: str = "buildings",
     additional_entities: list[str] = None,
     existing_id: str = None,
     new_geom_type: DbGeomType = DbGeomType.POINT,
@@ -346,7 +346,7 @@ async def validate_and_update_user_xlsform(
     """Wrapper to append mandatory fields and validate user uploaded XLSForm."""
     xform_id, updated_file_bytes = await append_fields_to_user_xlsform(
         xlsform,
-        form_category=form_category,
+        form_name=form_name,
         additional_entities=additional_entities,
         existing_id=existing_id,
         new_geom_type=new_geom_type,
@@ -361,7 +361,7 @@ async def update_project_xform(
     xform_id: str,
     odk_id: int,
     xlsform: BytesIO,
-    category: str,
+    # category: str,
     odk_credentials: central_schemas.ODKCentralDecrypted,
 ) -> None:
     """Update and publish the XForm for a project.
