@@ -492,6 +492,54 @@ async def convert_odk_submission_json_to_geojson(
         data = {}
         flatten_json(submission, data)
 
+        try:
+            manual_geopoint = submission["survery_questions"]["group_1"][
+                "manual_geopoint"
+            ]
+        except (KeyError, IndexError) as e:
+            log.warning(e)
+            manual_geopoint = None
+
+        if manual_geopoint:
+            manual_geopoint_geom = {
+                "type": manual_geopoint["type"],
+                "coordinates": manual_geopoint["coordinates"][
+                    :2
+                ],  # Use only [lon, lat]
+            }
+            # Add manual_geopoint as a separate feature
+            manual_geopoint_feature = geojson.Feature(
+                id="manual_geopoint",
+                geometry=manual_geopoint_geom,
+                properties={
+                    "is_manual_geopoint": True,
+                    "description": "Manually placed gate point",
+                    "accuracy": manual_geopoint["properties"]["accuracy"],
+                    "xid": data["xid"] if "xid" in data else None,  # Link to submission
+                },
+            )
+            all_features.append(manual_geopoint_feature)
+
+        # Identify and process additional geometries
+        additional_geometries = []
+        for geom_field in list(data.keys()):
+            if geom_field.endswith("_geom"):
+                id_field = geom_field[:-5]  # Remove "_geom" suffix
+                geom_data = data.pop(geom_field, {})
+
+                # Convert geometry
+                geom = await javarosa_to_geojson_geom(geom_data)
+
+                feature = geojson.Feature(
+                    id=data.get(id_field),
+                    geometry=geom,
+                    properties={
+                        "is_additional_geom": True,
+                        "id_field": id_field,
+                        "geom_field": geom_field,
+                    },
+                )
+                additional_geometries.append(feature)
         geojson_geom = await javarosa_to_geojson_geom(
             data.pop("xlocation", {}), geom_type="Polygon"
         )
