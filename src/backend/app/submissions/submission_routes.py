@@ -19,7 +19,6 @@
 
 import json
 from io import BytesIO
-from pprint import pprint
 from typing import Annotated, Optional
 import zipfile
 from loguru import logger as log
@@ -27,6 +26,9 @@ import geojson
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse, Response, StreamingResponse
 from psycopg import Connection
+import tempfile
+import os
+
 
 from app.auth.auth_schemas import ProjectUserDict
 from app.auth.roles import mapper, project_contributors, project_manager
@@ -440,26 +442,6 @@ async def download_submission_geojson(
             )
             manual_geopoints.append(manual_geopoint_feature)
 
-        # Identify and process additional geometries
-        additional_geometries = []
-        for geom_field in list(data.keys()):
-            if geom_field.endswith("_geom"):
-                id_field = geom_field[:-5]  # Remove "_geom" suffix
-                geom_data = data.pop(geom_field, {})
-
-                # Convert geometry
-                geom = await javarosa_to_geojson_geom(geom_data)
-
-                feature = geojson.Feature(
-                    id=data.get(id_field),
-                    geometry=geom,
-                    properties={
-                        "is_additional_geom": True,
-                        "id_field": id_field,
-                        "geom_field": geom_field,
-                    },
-                )
-                additional_geometries.append(feature)
         geojson_geom = await javarosa_to_geojson_geom(
             data.pop("xlocation", {}), geom_type="Polygon"
         )
@@ -469,30 +451,32 @@ async def download_submission_geojson(
 
     manual_geopoint_feature_collection = geojson.FeatureCollection(manual_geopoints)
     feature_collection = geojson.FeatureCollection(all_features)
-    pprint("manual_geopoint_feature_collection")
-    pprint(manual_geopoint_feature_collection)
-    pprint("feature_collection")
-    pprint(feature_collection)
-
-    zip_buffer = BytesIO()
-    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
-        # Convert GeoJSON objects to JSON strings
-        manual_points_json = json.dumps(manual_geopoint_feature_collection)
-        features_json = json.dumps(feature_collection)
+    
+    with tempfile.TemporaryDirectory() as temp_dir:
+        manual_points_path = os.path.join(temp_dir, "manual_geopoints.geojson")
+        features_path = os.path.join(temp_dir, "features.geojson")
         
-        # Write the JSON strings to files in the ZIP
-        zip_file.writestr("manual_geopoints.geojson", manual_points_json)
-        zip_file.writestr("features.geojson", features_json)
+        with open(manual_points_path, 'w') as f:
+            json.dump(manual_geopoint_feature_collection, f)
+        
+        with open(features_path, 'w') as f:
+            json.dump(feature_collection, f)
+        
+        zip_path = os.path.join(temp_dir, f"{project.slug}.zip")
+        
+        with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            zip_file.write(manual_points_path, arcname="manual_geopoints.geojson")
+            zip_file.write(features_path, arcname="features.geojson")
 
-    # Reset the buffer position to the beginning
-    zip_buffer.seek(0)
-
-    # Return the ZIP file as a response
-    return StreamingResponse(
-        zip_buffer, 
-        media_type="application/zip",
+        with open(zip_path, 'rb') as f:
+            zip_content = f.read()
+    
+    return Response(
+        content=zip_content,
+        media_type="application/x-zip-compressed",
         headers={
             "Content-Disposition": f'attachment; filename="{project.slug}.zip"',
+            "Content-Type": "application/zip",
         }
     )
 
