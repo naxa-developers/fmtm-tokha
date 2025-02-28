@@ -198,6 +198,12 @@
 		}
 	});
 
+	$effect(() => {
+		if (loaded && map) {
+			map?.setGlyphs('https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf');
+		}
+	});
+
 	// Workaround due to bug in @watergis/mapbox-gl-terradraw
 	function removeTerraDrawLayers() {
 		if (map) {
@@ -472,6 +478,20 @@
 		processGeojson={(geojsonData) => addStatusToGeojsonProperty(geojsonData)}
 		geojsonUpdateDependency={entitiesStore.entitiesStatusList}
 	>
+		<SymbolLayer
+			id="entity-text-label-layer"
+			paint={{
+				'text-color': 'black',
+				'text-opacity': 1,
+				'text-halo-color': '#ffffff',
+				'text-halo-width': 1,
+			}}
+			layout={{
+				'text-field': ['step', ['zoom'], '', 19, ['get', 'osm_id']],
+				'text-size': 12,
+				'text-allow-overlap': true,
+			}}
+		/>
 		<FillLayer
 			id="entity-fill-layer"
 			paint={{
@@ -589,7 +609,7 @@
 		<LayerSwitcher
 			{map}
 			styles={allBaseLayers}
-			sourcesIdToReAdd={['tasks', 'entities', 'geolocation']}
+			sourcesIdToReAdd={['tasks', 'entities', 'geolocation', 'maplibre-gl-directions', 'bad-geoms']}
 			selectedStyleName={selectedBaselayer}
 			{selectedStyleUrl}
 			setSelectedStyleUrl={(style) => (selectedStyleUrl = style)}
