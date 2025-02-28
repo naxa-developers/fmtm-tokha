@@ -24,6 +24,7 @@ map = new Map({
 
 <script lang="ts">
 	import { onDestroy } from 'svelte';
+	import { isTextLayer } from 'svelte-maplibre';
 
 	type MapLibreStylePlusMetadata = maplibregl.StyleSpecification & {
 		metadata: {
@@ -167,6 +168,9 @@ map = new Map({
 		if (reAddLayers) {
 			reAddLayers.forEach((layer) => {
 				if (!map?.getStyle().layers.find((l) => l.id === layer.id)) {
+					if (isTextLayer(layer)) {
+						map?.setGlyphs('https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf');
+					}
 					map?.addLayer(layer);
 				}
 			});
