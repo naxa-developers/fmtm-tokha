@@ -17,6 +17,7 @@
 #
 """Routes associated with data submission to and from ODK Central."""
 
+from io import BytesIO
 import json
 import os
 import tempfile
@@ -24,8 +25,8 @@ import zipfile
 from typing import Annotated, Optional
 
 import geojson
-from fastapi import APIRouter, Depends, HTTPException, Query
-from fastapi.responses import JSONResponse, Response
+from fastapi import APIRouter, Depends, HTTPException, Query, BackgroundTasks
+from fastapi.responses import JSONResponse, Response, StreamingResponse
 from loguru import logger as log
 from psycopg import Connection
 
@@ -436,9 +437,7 @@ async def download_submission_geojson(
                     "is_manual_geopoint": True,
                     "description": "Manually placed gate point",
                     "accuracy": manual_geopoint["properties"]["accuracy"],
-                    "house_id": data["xid"]
-                    if "xid" in data
-                    else None,  # Link to submission
+                    "house_id": data["xid"] if "xid" in data else None,  # Link to submission
                 },
             )
             manual_geopoints.append(manual_geopoint_feature)
@@ -453,32 +452,22 @@ async def download_submission_geojson(
     manual_geopoint_feature_collection = geojson.FeatureCollection(manual_geopoints)
     feature_collection = geojson.FeatureCollection(all_features)
 
-    with tempfile.TemporaryDirectory() as temp_dir:
-        manual_points_path = os.path.join(temp_dir, "manual_geopoints.geojson")
-        features_path = os.path.join(temp_dir, "features.geojson")
+    zip_buffer = BytesIO()
+    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+        manual_points_json = json.dumps(manual_geopoint_feature_collection)
+        features_json = json.dumps(feature_collection)
 
-        with open(manual_points_path, "w") as f:
-            json.dump(manual_geopoint_feature_collection, f)
+        zip_file.writestr("manual_geopoints.geojson", manual_points_json)
+        zip_file.writestr("features.geojson", features_json)
 
-        with open(features_path, "w") as f:
-            json.dump(feature_collection, f)
+    zip_buffer.seek(0)
 
-        zip_path = os.path.join(temp_dir, f"{project.slug}.zip")
-
-        with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zip_file:
-            zip_file.write(manual_points_path, arcname="manual_geopoints.geojson")
-            zip_file.write(features_path, arcname="features.geojson")
-
-        with open(zip_path, "rb") as f:
-            zip_content = f.read()
-
-    return Response(
-        content=zip_content,
-        media_type="application/x-zip-compressed",
+    return StreamingResponse(
+        zip_buffer, 
+        media_type="application/zip",
         headers={
             "Content-Disposition": f'attachment; filename="{project.slug}.zip"',
-            "Content-Type": "application/zip",
-        },
+        }
     )
 
 
