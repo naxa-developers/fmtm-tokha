@@ -17,15 +17,13 @@
 #
 """Routes associated with data submission to and from ODK Central."""
 
-from io import BytesIO
 import json
-import os
-import tempfile
 import zipfile
+from io import BytesIO
 from typing import Annotated, Optional
 
 import geojson
-from fastapi import APIRouter, Depends, HTTPException, Query, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse, Response, StreamingResponse
 from loguru import logger as log
 from psycopg import Connection
@@ -437,7 +435,9 @@ async def download_submission_geojson(
                     "is_manual_geopoint": True,
                     "description": "Manually placed gate point",
                     "accuracy": manual_geopoint["properties"]["accuracy"],
-                    "house_id": data["xid"] if "xid" in data else None,  # Link to submission
+                    "house_id": data["xid"]
+                    if "xid" in data
+                    else None,  # Link to submission
                 },
             )
             manual_geopoints.append(manual_geopoint_feature)
@@ -463,11 +463,11 @@ async def download_submission_geojson(
     zip_buffer.seek(0)
 
     return StreamingResponse(
-        zip_buffer, 
+        zip_buffer,
         media_type="application/zip",
         headers={
             "Content-Disposition": f'attachment; filename="{project.slug}.zip"',
-        }
+        },
     )
 
 
