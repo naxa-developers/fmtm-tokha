@@ -83,6 +83,7 @@
 	let expanding = true; // Whether the line is expanding
 	let selectedControl: 'layer-switcher' | 'legend' | null = $state(null);
 	let selectedStyleUrl: string | undefined = $state(undefined);
+	let showEntityLayer: boolean = $state(true);
 
 	// Trigger adding the PMTiles layer to baselayers, if PmtilesUrl is set
 	let allBaseLayers: maplibregl.StyleSpecification[] = $derived(
@@ -359,6 +360,16 @@
 		</ControlGroup></Control
 	>
 	<Control class="flex flex-col gap-y-2" position="bottom-right">
+		<div class="flex flex-col">
+			<p class="[text-shadow:_-1px_-1px_0_white,_1px_-1px_0_white,_-1px_1px_0_white,_1px_1px_0_white]">Building</p>
+			<hot-switch
+				size="medium"
+				checked={showEntityLayer}
+				onsl-change={(e: any) => {
+					showEntityLayer = e?.target?.checked;
+				}}
+			></hot-switch>
+		</div>
 		<div
 			class="rounded-full w-[2.25rem] h-[2.25rem] overflow-hidden flex items-center justify-center border-1 border-solid border-red-600 bg-[#FFEDED]"
 		>
@@ -469,95 +480,99 @@
 		/>
 	</GeoJSON>
 	<!-- The features / entities -->
-	<FlatGeobuf
-		id="entities"
-		url={entitiesUrl}
-		extent={taskStore.selectedTaskGeom}
-		extractGeomCols={true}
-		promoteId="id"
-		processGeojson={(geojsonData) => addStatusToGeojsonProperty(geojsonData)}
-		geojsonUpdateDependency={entitiesStore.entitiesStatusList}
-	>
-		<SymbolLayer
-			id="entity-text-label-layer"
-			paint={{
-				'text-color': 'black',
-				'text-opacity': 1,
-				'text-halo-color': '#ffffff',
-				'text-halo-width': 1,
-			}}
-			layout={{
-				'text-field': ['step', ['zoom'], '', 19, ['get', 'osm_id']],
-				'text-size': 12,
-				'text-allow-overlap': true,
-			}}
-		/>
-		<FillLayer
-			id="entity-fill-layer"
-			paint={{
-				'fill-opacity': ['match', ['get', 'status'], 'MARKED_BAD', 0, 0.6],
-				'fill-color': [
-					'match',
-					['get', 'status'],
-					'READY',
-					'#9c9a9a',
-					'OPENED_IN_ODK',
-					'#fae15f',
-					'SURVEY_SUBMITTED',
-					'#71bf86',
-					'MARKED_BAD',
-					'#fa1100',
-					'#c5fbf5', // default color if no match is found
-				],
-				'fill-outline-color': [
-					'match',
-					['get', 'status'],
-					'READY',
-					'#000000',
-					'OPENED_IN_ODK',
-					'#ffd603',
-					'SURVEY_SUBMITTED',
-					'#32a852',
-					'MARKED_BAD',
-					'#fa1100',
-					'#c5fbf5',
-				],
-			}}
-			beforeLayerType="symbol"
-			manageHoverState
-		/>
-		<LineLayer
-			layout={{ 'line-cap': 'round', 'line-join': 'round' }}
-			paint={{
-				'line-color': '#fa1100',
-				'line-width': ['case', ['==', ['get', 'osm_id'], entitiesStore.selectedEntity || ''], 1, 0],
-				'line-opacity': ['case', ['==', ['get', 'osm_id'], entitiesStore.selectedEntity || ''], 1, 0.35],
-			}}
-			beforeLayerType="symbol"
-			manageHoverState
-		/>
-	</FlatGeobuf>
-	<GeoJSON id="bad-geoms" data={entitiesStore.badGeomList}>
-		<FillLayer
-			id="bad-geom-fill-layer"
-			hoverCursor="pointer"
-			paint={{
-				'fill-color': '#fa1100',
-				'fill-opacity': 0.3,
-			}}
-			beforeLayerType="symbol"
-			manageHoverState
-		/>
-		<LineLayer
-			layout={{ 'line-cap': 'round', 'line-join': 'round' }}
-			paint={{
-				'line-color': '#fa1100',
-				'line-width': lineWidth,
-			}}
-			beforeLayerType="symbol"
-			manageHoverState
-		/>
-	</GeoJSON>
+	{#if showEntityLayer}
+		<FlatGeobuf
+			id="entities"
+			url={entitiesUrl}
+			extent={taskStore.selectedTaskGeom}
+			extractGeomCols={true}
+			promoteId="id"
+			processGeojson={(geojsonData) => addStatusToGeojsonProperty(geojsonData)}
+			geojsonUpdateDependency={entitiesStore.entitiesStatusList}
+		>
+			<SymbolLayer
+				id="entity-text-label-layer"
+				paint={{
+					'text-color': 'black',
+					'text-opacity': 1,
+					'text-halo-color': '#ffffff',
+					'text-halo-width': 1,
+				}}
+				layout={{
+					'text-field': ['step', ['zoom'], '', 19, ['get', 'osm_id']],
+					'text-size': 12,
+					'text-allow-overlap': true,
+				}}
+			/>
+			<FillLayer
+				id="entity-fill-layer"
+				paint={{
+					'fill-opacity': ['match', ['get', 'status'], 'MARKED_BAD', 0, 0.6],
+					'fill-color': [
+						'match',
+						['get', 'status'],
+						'READY',
+						'#9c9a9a',
+						'OPENED_IN_ODK',
+						'#fae15f',
+						'SURVEY_SUBMITTED',
+						'#71bf86',
+						'MARKED_BAD',
+						'#fa1100',
+						'#c5fbf5', // default color if no match is found
+					],
+					'fill-outline-color': [
+						'match',
+						['get', 'status'],
+						'READY',
+						'#000000',
+						'OPENED_IN_ODK',
+						'#ffd603',
+						'SURVEY_SUBMITTED',
+						'#32a852',
+						'MARKED_BAD',
+						'#fa1100',
+						'#c5fbf5',
+					],
+				}}
+				beforeLayerType="symbol"
+				manageHoverState
+			/>
+			<LineLayer
+				layout={{ 'line-cap': 'round', 'line-join': 'round' }}
+				paint={{
+					'line-color': '#fa1100',
+					'line-width': ['case', ['==', ['get', 'osm_id'], entitiesStore.selectedEntity || ''], 1, 0],
+					'line-opacity': ['case', ['==', ['get', 'osm_id'], entitiesStore.selectedEntity || ''], 1, 0.35],
+				}}
+				beforeLayerType="symbol"
+				manageHoverState
+			/>
+		</FlatGeobuf>
+	{/if}
+	{#if showEntityLayer}
+		<GeoJSON id="bad-geoms" data={entitiesStore.badGeomList}>
+			<FillLayer
+				id="bad-geom-fill-layer"
+				hoverCursor="pointer"
+				paint={{
+					'fill-color': '#fa1100',
+					'fill-opacity': 0.3,
+				}}
+				beforeLayerType="symbol"
+				manageHoverState
+			/>
+			<LineLayer
+				layout={{ 'line-cap': 'round', 'line-join': 'round' }}
+				paint={{
+					'line-color': '#fa1100',
+					'line-width': lineWidth,
+				}}
+				beforeLayerType="symbol"
+				manageHoverState
+			/>
+		</GeoJSON>
+	{/if}
 
 	<!-- pulse effect layer representing rejected entities -->
 
