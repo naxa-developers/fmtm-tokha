@@ -492,6 +492,26 @@ async def convert_odk_submission_json_to_geojson(
         data = {}
         flatten_json(submission, data)
 
+        # Identify and process additional geometries
+        additional_geometries = []
+        for geom_field in list(data.keys()):
+            if geom_field.endswith("_geom"):
+                id_field = geom_field[:-5]  # Remove "_geom" suffix
+                geom_data = data.pop(geom_field, {})
+
+                # Convert geometry
+                geom = await javarosa_to_geojson_geom(geom_data)
+
+                feature = geojson.Feature(
+                    id=data.get(id_field),
+                    geometry=geom,
+                    properties={
+                        "is_additional_geom": True,
+                        "id_field": id_field,
+                        "geom_field": geom_field,
+                    },
+                )
+                additional_geometries.append(feature)
         geojson_geom = await javarosa_to_geojson_geom(
             data.pop("xlocation", {}), geom_type="Polygon"
         )

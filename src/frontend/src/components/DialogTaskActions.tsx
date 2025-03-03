@@ -11,6 +11,7 @@ import { GetProjectTaskActivity } from '@/api/Project';
 import { Modal } from '@/components/common/Modal';
 import { useAppDispatch, useAppSelector } from '@/types/reduxTypes';
 import { taskSubmissionInfoType } from '@/models/task/taskModel';
+import { useIsOrganizationAdmin, useIsProjectManager } from '@/hooks/usePermissions';
 
 type dialogPropType = {
   taskId: number;
@@ -41,6 +42,9 @@ export default function Dialog({ taskId, feature }: dialogPropType) {
   const authDetails = CoreModules.useAppSelector((state) => state.login.authDetails);
   const projectTaskActivityList = useAppSelector((state) => state?.project?.projectTaskActivity);
 
+  const isOrganizationAdmin = useIsOrganizationAdmin(projectInfo?.organisation_id as number);
+  const isProjectManager = useIsProjectManager(projectInfo?.id as number);
+
   const currentProjectId: string = params.id;
   const projectIndex = projectData.findIndex((project) => project.id == parseInt(currentProjectId));
   const selectedTask = {
@@ -48,8 +52,14 @@ export default function Dialog({ taskId, feature }: dialogPropType) {
       return task?.id == taskId;
     })?.[0],
   };
-  const checkIfTaskAssignedOrNot =
-    selectedTask?.actioned_by_username === authDetails?.username || selectedTask?.actioned_by_username === null;
+
+  const checkIfTaskAssignedOrNot = (taskEvent) => {
+    return (
+      selectedTask?.actioned_by_username === authDetails?.username ||
+      selectedTask?.actioned_by_username === null ||
+      task_event.MAP === taskEvent
+    );
+  };
 
   useEffect(() => {
     if (taskId) {
@@ -174,14 +184,14 @@ export default function Dialog({ taskId, feature }: dialogPropType) {
         }
         className=""
       />
-      {list_of_task_actions?.length > 0 && checkIfTaskAssignedOrNot && (
+      {list_of_task_actions?.length > 0 && (
         <div
           className={`fmtm-grid fmtm-border-t-[1px] fmtm-p-2 sm:fmtm-p-5 ${
             list_of_task_actions?.length === 1 ? 'fmtm-grid-cols-1' : 'fmtm-grid-cols-2'
           }`}
         >
           {list_of_task_actions?.map((data, index) => {
-            return list_of_task_actions?.length != 0 ? (
+            return checkIfTaskAssignedOrNot(data.value) || isOrganizationAdmin || isProjectManager ? (
               <Button
                 btnId={data.value}
                 btnTestId="StartMapping"

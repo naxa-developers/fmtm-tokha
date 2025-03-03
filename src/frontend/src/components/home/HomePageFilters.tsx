@@ -4,6 +4,7 @@ import AssetModules from '@/shared/AssetModules';
 import Switch from '@/components/common/Switch';
 import { HomeActions } from '@/store/slices/HomeSlice';
 import { useAppDispatch, useAppSelector } from '@/types/reduxTypes';
+import { useHasManagedAnyOrganization } from '@/hooks/usePermissions';
 
 type homePageFiltersPropType = {
   onSearch: (data: string) => void;
@@ -12,6 +13,7 @@ type homePageFiltersPropType = {
 
 //Home Filter
 const HomePageFilters = ({ onSearch, filteredProjectCount }: homePageFiltersPropType) => {
+  const hasManagedAnyOrganization = useHasManagedAnyOrganization();
   const dispatch = useAppDispatch();
 
   const showMapStatus = useAppSelector((state) => state.home.showMapStatus);
@@ -23,16 +25,18 @@ const HomePageFilters = ({ onSearch, filteredProjectCount }: homePageFiltersProp
       <div>
         <div className="fmtm-flex fmtm-flex-col sm:fmtm-flex-row sm:fmtm-items-center fmtm-gap-4">
           <h5 className="fmtm-text-2xl">PROJECTS</h5>
-          <CoreModules.Link
-            to={'/create-project'}
-            style={{
-              textDecoration: 'none',
-            }}
-          >
-            <button className="fmtm-bg-primaryRed fmtm-text-sm sm:fmtm-text-[1rem] fmtm-px-4 fmtm-py-2 fmtm-rounded fmtm-w-auto fmtm-text-white fmtm-uppercase">
-              + Create New Project{' '}
-            </button>
-          </CoreModules.Link>
+          {hasManagedAnyOrganization && (
+            <CoreModules.Link
+              to={'/create-project'}
+              style={{
+                textDecoration: 'none',
+              }}
+            >
+              <button className="fmtm-bg-primaryRed fmtm-text-sm sm:fmtm-text-[1rem] fmtm-px-4 fmtm-py-2 fmtm-rounded fmtm-w-auto fmtm-text-white fmtm-uppercase">
+                + Create New Project{' '}
+              </button>
+            </CoreModules.Link>
+          )}
         </div>
         <div className="fmtm-flex fmtm-flex-col fmtm-gap-3 sm:fmtm-flex-row sm:fmtm-justify-between">
           <div className="fmtm-mt-3 fmtm-flex fmtm-items-center fmtm-gap-1">
