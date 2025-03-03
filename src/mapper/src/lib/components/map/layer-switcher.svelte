@@ -24,6 +24,7 @@ map = new Map({
 
 <script lang="ts">
 	import { onDestroy } from 'svelte';
+	import { isTextLayer } from 'svelte-maplibre';
 
 	type MapLibreStylePlusMetadata = maplibregl.StyleSpecification & {
 		metadata: {
@@ -142,8 +143,6 @@ map = new Map({
 	function selectStyle(style: MapLibreStylePlusMetadata) {
 		const currentMapStyle = map?.getStyle();
 
-		if (style.name === currentMapStyle.name) return;
-
 		setSelectedStyleUrl(style.metadata.thumbnail);
 
 		// Apply the selected style to the map
@@ -167,6 +166,9 @@ map = new Map({
 		if (reAddLayers) {
 			reAddLayers.forEach((layer) => {
 				if (!map?.getStyle().layers.find((l) => l.id === layer.id)) {
+					if (isTextLayer(layer)) {
+						map?.setGlyphs('https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf');
+					}
 					map?.addLayer(layer);
 				}
 			});
@@ -184,10 +186,18 @@ map = new Map({
 		{#each allStyles as style, _}
 			<div
 				class={`layer-card ${selectedStyleUrl === style.metadata.thumbnail ? 'active' : ''} h-[3.75rem] relative overflow-hidden rounded-md cursor-pointer hover:border-red-600`}
-				onclick={() => selectStyle(style)}
+				onclick={() => {
+					const currentMapStyle = map?.getStyle();
+					if (style.name === currentMapStyle?.name) return;
+					selectStyle(style);
+				}}
 				role="button"
 				onkeydown={(e) => {
-					if (e.key === 'Enter') selectStyle(style);
+					if (e.key === 'Enter') {
+						const currentMapStyle = map?.getStyle();
+						if (style.name === currentMapStyle?.name) return;
+						selectStyle(style);
+					}
 				}}
 				tabindex="0"
 			>

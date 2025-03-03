@@ -18,21 +18,25 @@
 """Routes associated with data submission to and from ODK Central."""
 
 import json
+import zipfile
 from io import BytesIO
 from typing import Annotated, Optional
 
 import geojson
 from fastapi import APIRouter, Depends, HTTPException, Query
-from fastapi.responses import JSONResponse, Response
+from fastapi.responses import JSONResponse, Response, StreamingResponse
+from loguru import logger as log
 from psycopg import Connection
 
 from app.auth.auth_schemas import ProjectUserDict
 from app.auth.roles import mapper, project_contributors, project_manager
 from app.central import central_crud
+from app.central.central_crud import flatten_json
 from app.db import postgis_utils
 from app.db.database import db_conn
 from app.db.enums import HTTPStatus
 from app.db.models import DbTask
+from app.db.postgis_utils import javarosa_to_geojson_geom
 from app.projects import project_crud
 from app.submissions import submission_crud, submission_schemas
 from app.tasks.task_deps import get_task
@@ -388,15 +392,83 @@ async def download_submission_geojson(
     data = await submission_crud.get_submission_by_project(project, filters)
     submission_json = data.get("value", [])
 
-    submission_geojson = await central_crud.convert_odk_submission_json_to_geojson(
-        submission_json
+    if isinstance(submission_json, list):
+        submission_json = submission_json
+    else:
+        submission_json = json.loads(submission_json.getvalue())
+
+    if not submission_json:
+        raise HTTPException(
+            status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
+            detail="Project contains no submissions yet",
+        )
+
+    all_features = []
+    manual_geopoints = []
+    for submission in submission_json:
+        keys_to_remove = ["meta", "__id", "__system"]
+        for key in keys_to_remove:
+            submission.pop(key)
+
+        data = {}
+        flatten_json(submission, data)
+
+        try:
+            manual_geopoint = submission["survery_questions"]["group_1"][
+                "manual_geopoint"
+            ]
+        except (KeyError, IndexError) as e:
+            log.warning(e)
+            manual_geopoint = None
+
+        if manual_geopoint:
+            manual_geopoint_geom = {
+                "type": manual_geopoint["type"],
+                "coordinates": manual_geopoint["coordinates"][
+                    :2
+                ],  # Use only [lon, lat]
+            }
+            # Add manual_geopoint as a separate feature
+            manual_geopoint_feature = geojson.Feature(
+                geometry=manual_geopoint_geom,
+                properties={
+                    "is_manual_geopoint": True,
+                    "description": "Manually placed gate point",
+                    "accuracy": manual_geopoint["properties"]["accuracy"],
+                    "house_id": data["xid"]
+                    if "xid" in data
+                    else None,  # Link to submission
+                },
+            )
+            manual_geopoints.append(manual_geopoint_feature)
+
+        geojson_geom = await javarosa_to_geojson_geom(
+            data.pop("xlocation", {}), geom_type="Polygon"
+        )
+
+        feature = geojson.Feature(geometry=geojson_geom, properties=data)
+        all_features.append(feature)
+
+    manual_geopoint_feature_collection = geojson.FeatureCollection(manual_geopoints)
+    feature_collection = geojson.FeatureCollection(all_features)
+
+    zip_buffer = BytesIO()
+    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+        manual_points_json = json.dumps(manual_geopoint_feature_collection)
+        features_json = json.dumps(feature_collection)
+
+        zip_file.writestr("manual_geopoints.geojson", manual_points_json)
+        zip_file.writestr("features.geojson", features_json)
+
+    zip_buffer.seek(0)
+
+    return StreamingResponse(
+        zip_buffer,
+        media_type="application/zip",
+        headers={
+            "Content-Disposition": f'attachment; filename="{project.slug}.zip"',
+        },
     )
-    submission_data = BytesIO(json.dumps(submission_geojson).encode("utf-8"))
-    filename = project.slug
-
-    headers = {"Content-Disposition": f"attachment; filename={filename}.geojson"}
-
-    return Response(submission_data.getvalue(), headers=headers)
 
 
 @router.get("/conflate-submission-geojson")

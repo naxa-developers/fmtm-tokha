@@ -492,6 +492,26 @@ async def convert_odk_submission_json_to_geojson(
         data = {}
         flatten_json(submission, data)
 
+        # Identify and process additional geometries
+        additional_geometries = []
+        for geom_field in list(data.keys()):
+            if geom_field.endswith("_geom"):
+                id_field = geom_field[:-5]  # Remove "_geom" suffix
+                geom_data = data.pop(geom_field, {})
+
+                # Convert geometry
+                geom = await javarosa_to_geojson_geom(geom_data)
+
+                feature = geojson.Feature(
+                    id=data.get(id_field),
+                    geometry=geom,
+                    properties={
+                        "is_additional_geom": True,
+                        "id_field": id_field,
+                        "geom_field": geom_field,
+                    },
+                )
+                additional_geometries.append(feature)
         geojson_geom = await javarosa_to_geojson_geom(
             data.pop("xlocation", {}), geom_type="Polygon"
         )
@@ -591,6 +611,34 @@ async def create_entity_list(
                 entities_list,
             )
 
+
+async def create_entity(
+    odk_creds: central_schemas.ODKCentralDecrypted,
+    odk_id: int,
+    properties: list[str],
+    entity: central_schemas.EntityDict,
+    dataset_name: str = "features",
+) -> dict:
+    """Create a new Entity in ODK."""
+    log.info(f"Creating ODK Entity in dataset '{dataset_name}' (ODK ID: {odk_id})")
+    try:
+        properties = central_schemas.entity_fields_to_list(properties)
+
+        label = entity.get("label")
+        data = entity.get("data")
+
+        if not label or not data:
+            log.error("Missing required entity fields: 'label' or 'data'")
+            raise ValueError("Entity must contain 'label' and 'data' fields")
+
+        async with central_deps.get_odk_dataset(odk_creds) as odk_central:
+            response = await odk_central.createEntity(odk_id, dataset_name, label, data)
+        log.info(f"Entity '{label}' successfully created in ODK")
+        return response
+
+    except Exception as e:
+        log.exception(f"Failed to create entity in ODK: {str(e)}")
+        raise
 
 async def get_entities_geojson(
     odk_creds: central_schemas.ODKCentralDecrypted,

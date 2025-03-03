@@ -19,6 +19,7 @@
 
 import json
 import logging
+import random
 from datetime import datetime, timezone
 from io import BytesIO
 from random import getrandbits
@@ -378,7 +379,7 @@ def add_required_geojson_properties(
             else:
                 # Random id
                 # NOTE 32-bit int is max supported by standard postgres Integer
-                random_id = getrandbits(30)
+                random_id = random.randint(20000, 29999)
                 feature["id"] = f"{random_id}"
                 properties["osm_id"] = random_id
 

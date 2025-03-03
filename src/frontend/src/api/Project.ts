@@ -333,7 +333,7 @@ export const DownloadSubmissionGeojson = (url: string, projectName: string) => {
         const response = await CoreModules.axios.get(url, { responseType: 'blob' });
         const a = document.createElement('a');
         a.href = window.URL.createObjectURL(response.data);
-        a.download = `${projectName}.geojson`;
+        a.download = `${projectName}.zip`;
         a.click();
         dispatch(ProjectActions.SetDownloadSubmissionGeojsonLoading(false));
       } catch (error) {
