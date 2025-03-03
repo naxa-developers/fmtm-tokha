@@ -143,8 +143,6 @@ map = new Map({
 	function selectStyle(style: MapLibreStylePlusMetadata) {
 		const currentMapStyle = map?.getStyle();
 
-		if (style.name === currentMapStyle.name) return;
-
 		setSelectedStyleUrl(style.metadata.thumbnail);
 
 		// Apply the selected style to the map
@@ -188,10 +186,18 @@ map = new Map({
 		{#each allStyles as style, _}
 			<div
 				class={`layer-card ${selectedStyleUrl === style.metadata.thumbnail ? 'active' : ''} h-[3.75rem] relative overflow-hidden rounded-md cursor-pointer hover:border-red-600`}
-				onclick={() => selectStyle(style)}
+				onclick={() => {
+					const currentMapStyle = map?.getStyle();
+					if (style.name === currentMapStyle?.name) return;
+					selectStyle(style);
+				}}
 				role="button"
 				onkeydown={(e) => {
-					if (e.key === 'Enter') selectStyle(style);
+					if (e.key === 'Enter') {
+						const currentMapStyle = map?.getStyle();
+						if (style.name === currentMapStyle?.name) return;
+						selectStyle(style);
+					}
 				}}
 				tabindex="0"
 			>
