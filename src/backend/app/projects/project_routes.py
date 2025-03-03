@@ -888,12 +888,12 @@ async def add_additional_entity_list(
 @router.post("/{project_id}/create-entity")
 async def add_new_entity(
     db: Annotated[Connection, Depends(db_conn)],
-    project_user_dict: Annotated[ProjectUserDict, Depends(project_manager)],
+    current_user: Annotated[ProjectUserDict, Depends(mapper)],
     geojson: Dict[str, Any],
 ):
     """Create an Entity for the project in ODK."""
     try:
-        project = project_user_dict.get("project")
+        project = current_user.get("project")
         project_odk_id = project.odkid
         project_odk_creds = project.odk_credentials
 
