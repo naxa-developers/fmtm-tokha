@@ -20,7 +20,6 @@
 import json
 import zipfile
 from io import BytesIO
-from pprint import pprint
 from typing import Annotated, Optional
 
 import geojson
