@@ -450,7 +450,9 @@ def flatten_json(data: dict, target: dict):
         flatten_json(original_dict, new_dict)
     """
     for k, v in data.items():
-        if isinstance(v, dict):
+        if k=="manual_geopoint":
+            target[k] = v
+        elif isinstance(v, dict):
             if "type" in v and "coordinates" in v:
                 # GeoJSON object found, skip it
                 continue
@@ -639,6 +641,7 @@ async def create_entity(
     except Exception as e:
         log.exception(f"Failed to create entity in ODK: {str(e)}")
         raise
+
 
 async def get_entities_geojson(
     odk_creds: central_schemas.ODKCentralDecrypted,

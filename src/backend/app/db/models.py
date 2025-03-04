@@ -1278,7 +1278,7 @@ class DbProject(BaseModel):
                 RETURNING
                     *,
                     ST_AsGeoJSON(outline)::jsonb AS outline;
-            """,
+                """,
                 model_dump,
             )
             new_project = await cur.fetchone()
@@ -1358,12 +1358,6 @@ class DbProject(BaseModel):
     async def delete(cls, db: Connection, project_id: int) -> bool:
         """Delete a project and its related data."""
         async with db.cursor() as cur:
-            await cur.execute(
-                """
-                DELETE FROM submission_photos WHERE project_id = %(project_id)s;
-            """,
-                {"project_id": project_id},
-            )
             await cur.execute(
                 """
                 DELETE FROM background_tasks WHERE project_id = %(project_id)s;
