@@ -178,6 +178,7 @@
 				geojson: { type: 'Feature', geometry: newFeatureGeom, properties: { entity_id: entity.uuid } },
 				project_id: data.projectId,
 			});
+			entitiesStore.syncEntityStatus(data.projectId);
 			cancelMapNewFeatureInODK();
 			openOdkCollectNewFeature(data?.project?.odk_form_id, entity.uuid);
 		} catch (error) {
