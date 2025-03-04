@@ -2,8 +2,7 @@ import { Fill, Icon, Stroke, Style } from 'ol/style';
 import { getCenter } from 'ol/extent';
 import { Point } from 'ol/geom';
 import AssetModules from '@/shared/AssetModules';
-import { entity_state } from '@/types/enums';
-import { EntityOsmMap } from '@/store/types/IProject';
+import { Text } from 'ol/style';
 
 function createPolygonStyle(fillColor: string, strokeColor: string) {
   return new Style({
@@ -106,11 +105,7 @@ const getTaskStatusStyle = (feature: Record<string, any>, mapTheme: Record<strin
   return geojsonStyles[status];
 };
 
-export const getFeatureStatusStyle = (osmId: string, mapTheme: Record<string, any>, entityOsmMap: EntityOsmMap[]) => {
-  const entity = entityOsmMap?.find((entity) => entity?.osm_id === osmId) as EntityOsmMap;
-
-  let status = entity_state[entity?.status];
-
+export const getFeatureStatusStyle = (mapTheme: Record<string, any>, status: string, osm_id: number) => {
   const borderStrokeColor = 'rgb(0,0,0,0.5)';
 
   const strokeStyle = new Stroke({
@@ -124,6 +119,10 @@ export const getFeatureStatusStyle = (osmId: string, mapTheme: Record<string, an
       stroke: strokeStyle,
       fill: new Fill({
         color: mapTheme.palette.mapFeatureColors.ready_rgb,
+      }),
+      text: new Text({
+        text: osm_id?.toString(),
+        font: '10px Arial',
       }),
     }),
     OPENED_IN_ODK: new Style({
