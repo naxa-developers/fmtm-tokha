@@ -115,15 +115,17 @@
 	});
 
 	$effect(() => {
+		entitiesStore.syncEntityStatus(data.projectId);
+	});
+
+	$effect(() => {
+		entitiesStore.entitiesList;
 		let entityStatusStream: ShapeStream | undefined;
 
+		if (entitiesStore.entitiesList?.length === 0) return;
 		async function getEntityStatus() {
-			const entityStatusResponse = await fetch(`${API_URL}/projects/${data.projectId}/entities/statuses`, {
-				credentials: 'include',
-			});
-			const response = await entityStatusResponse.json();
 			entityStatusStream = getEntityStatusStream(data.projectId);
-			await entitiesStore.subscribeToEntityStatusUpdates(entityStatusStream, response);
+			await entitiesStore.subscribeToEntityStatusUpdates(entityStatusStream, entitiesStore.entitiesList);
 		}
 
 		getEntityStatus();

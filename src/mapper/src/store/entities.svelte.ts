@@ -56,6 +56,7 @@ let entityToNavigate: entityIdCoordinateMapType | null = $state(null);
 let toggleGeolocation: boolean = $state(false);
 let createEntityLoading: boolean = $state(false);
 let createGeomRecordLoading: boolean = $state(false);
+let entitiesList: entitiesListType[] = $state([]);
 let alertStore = getAlertStore();
 
 function getEntityStatusStream(projectId: number): ShapeStream | undefined {
@@ -134,9 +135,11 @@ function getEntitiesStatusStore() {
 	async function syncEntityStatus(projectId: number) {
 		try {
 			syncEntityStatusLoading = true;
-			await fetch(`${API_URL}/projects/${projectId}/entities/statuses`, {
+			const entityStatusResponse = await fetch(`${API_URL}/projects/${projectId}/entities/statuses`, {
 				credentials: 'include',
 			});
+			const response = await entityStatusResponse.json();
+			entitiesList = response;
 			syncEntityStatusLoading = false;
 		} catch (error) {
 			syncEntityStatusLoading = false;
@@ -270,6 +273,9 @@ function getEntitiesStatusStore() {
 		},
 		get createGeomRecordLoading() {
 			return createGeomRecordLoading;
+		},
+		get entitiesList() {
+			return entitiesList;
 		},
 	};
 }
