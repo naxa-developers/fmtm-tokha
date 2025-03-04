@@ -20,6 +20,7 @@
 import json
 import zipfile
 from io import BytesIO
+from pprint import pprint
 from typing import Annotated, Optional
 
 import geojson
@@ -414,9 +415,7 @@ async def download_submission_geojson(
         flatten_json(submission, data)
 
         try:
-            manual_geopoint = submission["survery_questions"]["group_1"][
-                "manual_geopoint"
-            ]
+            manual_geopoint = data["manual_geopoint"]
         except (KeyError, IndexError) as e:
             log.warning(e)
             manual_geopoint = None
