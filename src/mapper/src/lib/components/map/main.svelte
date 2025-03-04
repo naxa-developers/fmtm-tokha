@@ -708,7 +708,7 @@
 		<LayerSwitcher
 			{map}
 			styles={allBaseLayers}
-			sourcesIdToReAdd={['tasks', 'entities', 'geolocation', 'maplibre-gl-directions', 'bad-geoms']}
+			sourcesIdToReAdd={['tasks', 'entities', 'geolocation', 'maplibre-gl-directions', 'bad-geoms', 'new-geoms']}
 			selectedStyleName={selectedBaselayer}
 			{selectedStyleUrl}
 			setSelectedStyleUrl={(style) => (selectedStyleUrl = style)}
