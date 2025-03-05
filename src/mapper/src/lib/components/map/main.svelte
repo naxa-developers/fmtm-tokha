@@ -283,6 +283,7 @@
 
 	function addStatusToGeojsonProperty(geojsonData: FeatureCollection, entityType: '' | 'new'): FeatureCollection {
 		if (entityType === 'new') {
+			map?.setGlyphs('https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf');
 			return {
 				...geojsonData,
 				features: geojsonData.features.map((feature) => {
@@ -295,6 +296,7 @@
 							...feature.properties,
 							status: entity?.status,
 							entity_id: entity?.entity_id,
+							osm_id: entity?.osmid,
 						},
 					};
 				}),
@@ -610,6 +612,20 @@
 	{/if}
 	{#if showEntityLayer}
 		<GeoJSON id="new-geoms" data={addStatusToGeojsonProperty(entitiesStore.newGeomList, 'new')}>
+			<SymbolLayer
+				id="new-entity-text-label-layer"
+				paint={{
+					'text-color': 'black',
+					'text-opacity': 1,
+					'text-halo-color': '#ffffff',
+					'text-halo-width': 1,
+				}}
+				layout={{
+					'text-field': ['step', ['zoom'], '', 19, ['get', 'osm_id']],
+					'text-size': 12,
+					'text-allow-overlap': true,
+				}}
+			/>
 			<FillLayer
 				id="new-entity-polygon-layer"
 				paint={{
