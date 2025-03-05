@@ -105,12 +105,10 @@ const getTaskStatusStyle = (feature: Record<string, any>, mapTheme: Record<strin
   return geojsonStyles[status];
 };
 
-export const getFeatureStatusStyle = (mapTheme: Record<string, any>, status: string, osm_id: number) => {
-  const borderStrokeColor = 'rgb(0,0,0,0.5)';
-
+export const getFeatureStatusStyle = (mapTheme: Record<string, any>, status: string, osm_id: number, isNewEntity: boolean) => {
   const strokeStyle = new Stroke({
-    color: borderStrokeColor,
-    width: 1,
+    color: isNewEntity ? 'rgb(0, 0, 255, 0.5)' : 'rgb(0,0,0,0.5)',
+    width: isNewEntity ? 2 : 1,
     opacity: 0.2,
   });
 
@@ -135,20 +133,14 @@ export const getFeatureStatusStyle = (mapTheme: Record<string, any>, status: str
       text: textStyle,
     }),
     SURVEY_SUBMITTED: new Style({
-      stroke: new Stroke({
-        color: borderStrokeColor,
-        width: 1,
-      }),
+      stroke: strokeStyle,
       fill: new Fill({
         color: mapTheme.palette.mapFeatureColors.validated_rgb,
       }),
       text: textStyle,
     }),
     MARKED_BAD: new Style({
-      stroke: new Stroke({
-        color: borderStrokeColor,
-        width: 1,
-      }),
+      stroke: strokeStyle,
       fill: new Fill({
         color: mapTheme.palette.mapFeatureColors.bad_rgb,
       }),

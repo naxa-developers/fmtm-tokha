@@ -532,7 +532,7 @@ const ProjectDetailsV2 = () => {
                     (entity) => entity?.id === feature?.getProperties()?.entity_id,
                   ) as EntityOsmMap;
                   const status = entity_state[entity?.status];
-                  return getFeatureStatusStyle(mapTheme, status, entity?.osm_id);
+                  return getFeatureStatusStyle(mapTheme, status, entity?.osm_id, true);
                 }}
               />
               {dataExtractUrl && isValidUrl(dataExtractUrl) && dataExtractExtent && selectedTask && (
@@ -544,7 +544,7 @@ const ProjectDetailsV2 = () => {
                     const entity = entityOsmMap?.find((entity) => entity?.osm_id === osmId) as EntityOsmMap;
 
                     const status = entity_state[entity?.status];
-                    return getFeatureStatusStyle(mapTheme, status, entity?.osm_id);
+                    return getFeatureStatusStyle(mapTheme, status, entity?.osm_id, false);
                   }}
                   viewProperties={{
                     size: map?.getSize(),
