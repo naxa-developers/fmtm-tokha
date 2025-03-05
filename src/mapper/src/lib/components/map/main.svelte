@@ -579,8 +579,8 @@
 				layout={{ 'line-cap': 'round', 'line-join': 'round' }}
 				paint={{
 					'line-color': '#fa1100',
-					'line-width': ['case', ['==', ['get', 'osm_id'], entitiesStore.selectedEntity || ''], 1, 0],
-					'line-opacity': ['case', ['==', ['get', 'osm_id'], entitiesStore.selectedEntity || ''], 1, 0.35],
+					'line-width': ['case', ['==', ['get', 'entity_id'], entitiesStore.selectedEntity || ''], 1, 0],
+					'line-opacity': ['case', ['==', ['get', 'entity_id'], entitiesStore.selectedEntity || ''], 1, 0.35],
 				}}
 				beforeLayerType="symbol"
 				manageHoverState
@@ -665,9 +665,10 @@
 			<LineLayer
 				layout={{ 'line-cap': 'round', 'line-join': 'round' }}
 				paint={{
+					'line-color': ['case', ['==', ['get', 'entity_id'], entitiesStore.selectedEntity || ''], '#fa1100', '#00BFFF'],
 					'line-color': '#fa1100',
-					'line-width': ['case', ['==', ['get', 'osm_id'], entitiesStore.selectedEntity || ''], 1, 0],
-					'line-opacity': ['case', ['==', ['get', 'osm_id'], entitiesStore.selectedEntity || ''], 1, 0.35],
+					'line-width': ['case', ['==', ['get', 'entity_id'], entitiesStore.selectedEntity || ''], 1, 2],
+					'line-opacity': 1,
 				}}
 				beforeLayerType="symbol"
 				manageHoverState
