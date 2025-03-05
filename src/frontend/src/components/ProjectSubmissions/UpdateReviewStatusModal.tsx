@@ -97,11 +97,13 @@ const UpdateReviewStatusModal = () => {
         const badGeomId = badGeomLogList.find(
           (geom) => geom.geojson.properties.entity_id === updateReviewStatusModal.entity_id,
         )?.id;
-        dispatch(
-          DeleteGeometry(
-            `${import.meta.env.VITE_API_URL}/projects/${updateReviewStatusModal.projectId}/geometry/records/${badGeomId}`,
-          ),
-        );
+        if (badGeomId) {
+          dispatch(
+            DeleteGeometry(
+              `${import.meta.env.VITE_API_URL}/projects/${updateReviewStatusModal.projectId}/geometry/records/${badGeomId}`,
+            ),
+          );
+        }
       }
 
       dispatch(
