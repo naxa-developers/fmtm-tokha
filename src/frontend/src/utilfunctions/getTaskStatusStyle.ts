@@ -114,22 +114,25 @@ export const getFeatureStatusStyle = (mapTheme: Record<string, any>, status: str
     opacity: 0.2,
   });
 
+  const textStyle = new Text({
+    text: osm_id?.toString(),
+    font: '10px Arial',
+  });
+
   const geojsonStyles = {
     READY: new Style({
       stroke: strokeStyle,
       fill: new Fill({
         color: mapTheme.palette.mapFeatureColors.ready_rgb,
       }),
-      text: new Text({
-        text: osm_id?.toString(),
-        font: '10px Arial',
-      }),
+      text: textStyle,
     }),
     OPENED_IN_ODK: new Style({
       stroke: strokeStyle,
       fill: new Fill({
         color: mapTheme.palette.mapFeatureColors.locked_for_validation,
       }),
+      text: textStyle,
     }),
     SURVEY_SUBMITTED: new Style({
       stroke: new Stroke({
@@ -139,6 +142,7 @@ export const getFeatureStatusStyle = (mapTheme: Record<string, any>, status: str
       fill: new Fill({
         color: mapTheme.palette.mapFeatureColors.validated_rgb,
       }),
+      text: textStyle,
     }),
     MARKED_BAD: new Style({
       stroke: new Stroke({
@@ -148,6 +152,7 @@ export const getFeatureStatusStyle = (mapTheme: Record<string, any>, status: str
       fill: new Fill({
         color: mapTheme.palette.mapFeatureColors.bad_rgb,
       }),
+      text: textStyle,
     }),
   };
   return geojsonStyles[status];
