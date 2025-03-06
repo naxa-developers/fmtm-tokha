@@ -531,7 +531,6 @@ const ProjectDetailsV2 = () => {
                   const entity = entityOsmMap?.find(
                     (entity) => entity?.id === feature?.getProperties()?.entity_id,
                   ) as EntityOsmMap;
-                  console.log(feature?.getProperties());
                   const status = entity_state[entity?.status];
                   return getFeatureStatusStyle(mapTheme, status, entity?.osm_id, !feature?.getProperties()?.isBad);
                 }}
