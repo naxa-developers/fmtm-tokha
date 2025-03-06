@@ -307,7 +307,7 @@ const ProjectDetailsV2 = () => {
         if (width >= 6) expanding = false;
       } else {
         width -= 0.3;
-        if (width <= 1) expanding = true;
+        if (width <= 2) expanding = true;
       }
 
       // apply style to the layer
@@ -531,8 +531,9 @@ const ProjectDetailsV2 = () => {
                   const entity = entityOsmMap?.find(
                     (entity) => entity?.id === feature?.getProperties()?.entity_id,
                   ) as EntityOsmMap;
+                  console.log(feature?.getProperties());
                   const status = entity_state[entity?.status];
-                  return getFeatureStatusStyle(mapTheme, status, entity?.osm_id, true);
+                  return getFeatureStatusStyle(mapTheme, status, entity?.osm_id, !feature?.getProperties()?.isBad);
                 }}
               />
               {dataExtractUrl && isValidUrl(dataExtractUrl) && dataExtractExtent && selectedTask && (

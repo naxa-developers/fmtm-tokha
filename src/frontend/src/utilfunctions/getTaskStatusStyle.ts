@@ -107,7 +107,7 @@ const getTaskStatusStyle = (feature: Record<string, any>, mapTheme: Record<strin
 
 export const getFeatureStatusStyle = (mapTheme: Record<string, any>, status: string, osm_id: number, isNewEntity: boolean) => {
   const strokeStyle = new Stroke({
-    color: isNewEntity ? 'rgb(0, 0, 255, 0.5)' : 'rgb(0,0,0,0.5)',
+    color: isNewEntity ? 'rgb(0, 225, 255,1)' : 'rgb(0,0,0,0.5)',
     width: isNewEntity ? 2 : 1,
     opacity: 0.2,
   });

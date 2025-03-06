@@ -163,7 +163,12 @@ const ProjectSlice = createSlice({
       const geomLog = action.payload;
       const badGeomLog = geomLog.filter((geom) => geom.status === 'BAD');
       const badGeomLogGeojson = badGeomLog.map((geom) => geom.geojson);
-      const newGeomLogGeojson = geomLog.filter((geom) => geom.status === 'NEW').map((geom) => geom.geojson);
+			const newGeomLogGeojson = geomLog.filter((geom) => geom.status === 'NEW').map((geom) => {
+				if (badGeomLogGeojson?.find(badRow => badRow?.properties?.entity_id === geom?.geojson?.properties?.entity_id)) {
+					return {...geom?.geojson, properties: {...geom?.geojson?.properties, isBad: true}};
+				}
+				return {...geom?.geojson};
+			});
       state.badGeomFeatureCollection = { type: 'FeatureCollection', features: badGeomLogGeojson };
       state.newGeomFeatureCollection = { type: 'FeatureCollection', features: newGeomLogGeojson };
       state.badGeomLogList = badGeomLog;
