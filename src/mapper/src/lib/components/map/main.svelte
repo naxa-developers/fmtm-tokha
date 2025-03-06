@@ -667,7 +667,7 @@
 				paint={{
 					'line-color': ['case', ['==', ['get', 'entity_id'], entitiesStore.selectedEntity || ''], '#fa1100', '#00BFFF'],
 					'line-width': ['case', ['==', ['get', 'entity_id'], entitiesStore.selectedEntity || ''], 1, 2],
-					'line-opacity': 1,
+					'line-opacity': ['case', ['==', ['get', 'isBad'], true], 0, 2],
 				}}
 				beforeLayerType="symbol"
 				manageHoverState
