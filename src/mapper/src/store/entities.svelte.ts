@@ -109,8 +109,13 @@ function getEntitiesStatusStore() {
 		geomShape.subscribe((geom: ShapeData) => {
 			const rows: newBadGeomType<'NEW' | 'BAD'>[] = geom.rows;
 			const badRows = rows.filter((row) => row.status === 'BAD').map((row) => row?.geojson) as Feature[];
-			const newRows = rows.filter((row) => row.status === 'NEW').map((row) => row?.geojson) as Feature[];
-
+			const newRows = rows.filter((row) => row.status === 'NEW').map((row) => {
+				//@ts-ignore
+				if (badRows?.find(badRow => badRow?.properties?.entity_id === row?.geojson?.properties?.entity_id)) {
+					return {...row?.geojson, properties: {...row?.geojson?.properties, isBad: true}};
+				}
+				return {...row?.geojson, isBad: false};
+			});
 			if (rows && Array.isArray(rows)) {
 				badGeomList = {
 					type: 'FeatureCollection',
