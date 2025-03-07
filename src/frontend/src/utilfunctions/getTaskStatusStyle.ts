@@ -2,8 +2,7 @@ import { Fill, Icon, Stroke, Style } from 'ol/style';
 import { getCenter } from 'ol/extent';
 import { Point } from 'ol/geom';
 import AssetModules from '@/shared/AssetModules';
-import { entity_state } from '@/types/enums';
-import { EntityOsmMap } from '@/store/types/IProject';
+import { Text } from 'ol/style';
 
 function createPolygonStyle(fillColor: string, strokeColor: string) {
   return new Style({
@@ -106,17 +105,16 @@ const getTaskStatusStyle = (feature: Record<string, any>, mapTheme: Record<strin
   return geojsonStyles[status];
 };
 
-export const getFeatureStatusStyle = (osmId: string, mapTheme: Record<string, any>, entityOsmMap: EntityOsmMap[]) => {
-  const entity = entityOsmMap?.find((entity) => entity?.osm_id === osmId) as EntityOsmMap;
-
-  let status = entity_state[entity?.status];
-
-  const borderStrokeColor = 'rgb(0,0,0,0.5)';
-
+export const getFeatureStatusStyle = (mapTheme: Record<string, any>, status: string, osm_id: number, isNewEntity: boolean) => {
   const strokeStyle = new Stroke({
-    color: borderStrokeColor,
-    width: 1,
+    color: isNewEntity ? 'rgb(0, 225, 255,1)' : 'rgb(0,0,0,0.5)',
+    width: isNewEntity ? 2 : 1,
     opacity: 0.2,
+  });
+
+  const textStyle = new Text({
+    text: osm_id?.toString(),
+    font: '10px Arial',
   });
 
   const geojsonStyles = {
@@ -125,30 +123,28 @@ export const getFeatureStatusStyle = (osmId: string, mapTheme: Record<string, an
       fill: new Fill({
         color: mapTheme.palette.mapFeatureColors.ready_rgb,
       }),
+      text: textStyle,
     }),
     OPENED_IN_ODK: new Style({
       stroke: strokeStyle,
       fill: new Fill({
         color: mapTheme.palette.mapFeatureColors.locked_for_validation,
       }),
+      text: textStyle,
     }),
     SURVEY_SUBMITTED: new Style({
-      stroke: new Stroke({
-        color: borderStrokeColor,
-        width: 1,
-      }),
+      stroke: strokeStyle,
       fill: new Fill({
         color: mapTheme.palette.mapFeatureColors.validated_rgb,
       }),
+      text: textStyle,
     }),
     MARKED_BAD: new Style({
-      stroke: new Stroke({
-        color: borderStrokeColor,
-        width: 1,
-      }),
+      stroke: strokeStyle,
       fill: new Fill({
         color: mapTheme.palette.mapFeatureColors.bad_rgb,
       }),
+      text: textStyle,
     }),
   };
   return geojsonStyles[status];

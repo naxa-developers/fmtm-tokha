@@ -37,6 +37,8 @@ import Instructions from '@/components/ProjectDetailsV2/Instructions';
 import useDocumentTitle from '@/utilfunctions/useDocumentTitle';
 import { Style, Stroke } from 'ol/style';
 import MapStyles from '@/hooks/MapStyles';
+import { EntityOsmMap } from '@/models/project/projectModel';
+import { entity_state } from '@/types/enums';
 
 const ProjectDetailsV2 = () => {
   useDocumentTitle('Project Details');
@@ -71,6 +73,7 @@ const ProjectDetailsV2 = () => {
   const entityOsmMap = useAppSelector((state) => state?.project?.entityOsmMap);
   const entityOsmMapLoading = useAppSelector((state) => state?.project?.entityOsmMapLoading);
   const badGeomFeatureCollection = useAppSelector((state) => state?.project?.badGeomFeatureCollection);
+  const newGeomFeatureCollection = useAppSelector((state) => state?.project?.newGeomFeatureCollection);
   const getGeomLogLoading = useAppSelector((state) => state?.project?.getGeomLogLoading);
   const syncTaskStateLoading = useAppSelector((state) => state?.project?.syncTaskStateLoading);
 
@@ -304,7 +307,7 @@ const ProjectDetailsV2 = () => {
         if (width >= 6) expanding = false;
       } else {
         width -= 0.3;
-        if (width <= 1) expanding = true;
+        if (width <= 2) expanding = true;
       }
 
       // apply style to the layer
@@ -512,12 +515,36 @@ const ProjectDetailsV2 = () => {
                 zIndex={5}
                 style=""
               />
+              <VectorLayer
+                geojson={newGeomFeatureCollection}
+                viewProperties={{
+                  size: map?.getSize(),
+                  padding: [50, 50, 50, 50],
+                  constrainResolution: true,
+                  duration: 2000,
+                }}
+                layerProperties={{ name: 'new-entities' }}
+                zIndex={5}
+                style=""
+                mapOnClick={projectClickOnTaskFeature}
+                getTaskStatusStyle={(feature) => {
+                  const entity = entityOsmMap?.find(
+                    (entity) => entity?.id === feature?.getProperties()?.entity_id,
+                  ) as EntityOsmMap;
+                  const status = entity_state[entity?.status];
+                  return getFeatureStatusStyle(mapTheme, status, entity?.osm_id, !feature?.getProperties()?.isBad);
+                }}
+              />
               {dataExtractUrl && isValidUrl(dataExtractUrl) && dataExtractExtent && selectedTask && (
                 <VectorLayer
                   fgbUrl={dataExtractUrl}
                   fgbExtent={dataExtractExtent}
                   getTaskStatusStyle={(feature) => {
-                    return getFeatureStatusStyle(feature?.getProperties()?.osm_id, mapTheme, entityOsmMap);
+                    const osmId = feature?.getProperties()?.osm_id;
+                    const entity = entityOsmMap?.find((entity) => entity?.osm_id === osmId) as EntityOsmMap;
+
+                    const status = entity_state[entity?.status];
+                    return getFeatureStatusStyle(mapTheme, status, entity?.osm_id, false);
                   }}
                   viewProperties={{
                     size: map?.getSize(),
