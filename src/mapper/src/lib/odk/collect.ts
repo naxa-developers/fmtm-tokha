@@ -14,7 +14,7 @@ export function openOdkCollectNewFeature(xFormId: string, entityId: string) {
 
 	if (isMobile) {
 		// TODO we need to update the form to support task_id=${}&
-		document.location.href = `odkcollect://form/${xFormId}?feature=${entityId}`;
+		document.location.href = `odkcollect://form/${xFormId}?feature=${entityId}&should_update=true`;
 	} else {
 		alertStore.setAlert({
 			variant: 'warning',
