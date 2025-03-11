@@ -414,7 +414,7 @@ async def download_submission_geojson(
         flatten_json(submission, data)
 
         try:
-            manual_geopoint = data["manual_geopoint"]
+            manual_geopoint = data.pop("manual_geopoint")
         except (KeyError, IndexError) as e:
             log.warning(e)
             manual_geopoint = None
