@@ -84,7 +84,7 @@
 			<span class="font-barlow font-medium text-base uppercase">Show On Map</span>
 		</hot-button>
 
-		<hot-button
+		<!-- <hot-button
 			onclick={() => writeOfflinePmtiles(projectId, selectedBasemap?.url)}
 			onkeydown={(e: KeyboardEvent) => {
 				e.key === 'Enter' && writeOfflinePmtiles(projectId, selectedBasemap?.url);
@@ -97,7 +97,7 @@
 			<hot-icon slot="prefix" name="download" class="!text-[1rem] text-[#b91c1c] cursor-pointer duration-200"
 			></hot-icon>
 			<span class="font-barlow font-medium text-base uppercase">Store Offline</span>
-		</hot-button>
+		</hot-button> -->
 
 		<!-- Download Mbtiles Button -->
 	{:else if selectedBasemap && selectedBasemap.format === 'mbtiles'}

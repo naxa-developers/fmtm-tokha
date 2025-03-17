@@ -7,6 +7,7 @@
 	import { getTaskStore } from '$store/tasks.svelte.ts';
 	import { mapTask } from '$lib/db/events';
 	import type { SlDialog } from '@shoelace-style/shoelace';
+	import { derived } from 'svelte/store';
 
 	type statusType = 'READY' | 'OPENED_IN_ODK' | 'SURVEY_SUBMITTED' | 'MARKED_BAD' | 'VALIDATED';
 	type Props = {
@@ -36,6 +37,8 @@
 	let dialogRef: SlDialog | null = $state(null);
 	let toggleDistanceWarningDialog = $state(false);
 	let showCommentsPopup: boolean = $state(false);
+	let entityMap = $derived(new Map(entitiesStore.entitiesStatusList.map(entity => [entity.entity_id, entity])))
+
 
 	const entitiesStore = getEntitiesStatusStore();
 	const alertStore = getAlertStore();
@@ -43,7 +46,7 @@
 
 	const selectedEntityId = $derived(entitiesStore.selectedEntity);
 	const selectedEntity = $derived(
-		entitiesStore.entitiesStatusList?.find((entity) => entity.entity_id === selectedEntityId),
+		entityMap.get(selectedEntityId),
 	);
 	const selectedEntityCoordinate = $derived(entitiesStore.selectedEntityCoordinate);
 	const entityToNavigate = $derived(entitiesStore.entityToNavigate);

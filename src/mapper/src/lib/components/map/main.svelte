@@ -280,6 +280,8 @@
 			}
 		}
 	});
+	let entityMapByEntity = $derived(new Map(entitiesStore.entitiesStatusList.map(entity => [entity.entity_id, entity])))
+	let entityMapByOsm = $derived(new Map(entitiesStore.entitiesStatusList.map(entity => [entity.osmid, entity])))
 
 	function addStatusToGeojsonProperty(geojsonData: FeatureCollection, entityType: '' | 'new'): FeatureCollection {
 		if (entityType === 'new') {
@@ -287,9 +289,7 @@
 			return {
 				...geojsonData,
 				features: geojsonData.features.map((feature) => {
-					const entity = entitiesStore.entitiesStatusList.find(
-						(entity) => entity.entity_id === feature?.properties?.entity_id,
-					);
+					const entity = entityMapByEntity.get(feature?.properties?.entity_id);
 					return {
 						...feature,
 						properties: {
@@ -305,9 +305,7 @@
 			return {
 				...geojsonData,
 				features: geojsonData.features.map((feature) => {
-					const entity = entitiesStore.entitiesStatusList.find(
-						(entity) => entity.osmid === feature?.properties?.osm_id,
-					);
+					const entity = entityMapByOsm.get(feature?.properties?.osm_id);
 					return {
 						...feature,
 						properties: {
@@ -525,7 +523,7 @@
 			extractGeomCols={true}
 			promoteId="id"
 			processGeojson={(geojsonData) => addStatusToGeojsonProperty(geojsonData, '')}
-			geojsonUpdateDependency={entitiesStore.entitiesStatusList}
+			geojsonUpdateDependency={[entityMapByEntity, entityMapByOsm]}
 		>
 			<SymbolLayer
 				id="entity-text-label-layer"
