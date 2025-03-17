@@ -82,6 +82,31 @@ function getNewBadGeomStream(projectId: number): ShapeStream | undefined {
 }
 
 function getEntitiesStatusStore() {
+	// async function subscribeToEntityStatusUpdates(
+	// 	entitiesStream: ShapeStream | undefined,
+	// 	entitiesList: entitiesListType[],
+	// ) {
+	// 	if (!entitiesStream) return;
+	// 	entitiesShape = new Shape(entitiesStream);
+
+	// 	const start = performance.now();
+
+	// 	entitiesShape.subscribe((entities: ShapeData) => {
+	// 		const rows: entitiesShapeType[] = entities.rows;
+	// 		if (rows && Array.isArray(rows)) {
+	// 			entitiesStatusList = rows?.map((entity) => {
+	// 				return {
+	// 					...entity,
+	// 					osmid: entitiesList?.find((entityx) => entityx.id === entity.entity_id)?.osm_id,
+	// 				};
+	// 			});
+	// 		}
+	// 		const end = performance.now();
+	// 		console.log(`Processing time: ${(end - start).toFixed(2)} ms`);
+
+	// 	});
+	// }
+
 	async function subscribeToEntityStatusUpdates(
 		entitiesStream: ShapeStream | undefined,
 		entitiesList: entitiesListType[],
@@ -89,15 +114,17 @@ function getEntitiesStatusStore() {
 		if (!entitiesStream) return;
 		entitiesShape = new Shape(entitiesStream);
 
+
+		// Create a Map for quick lookups
+		const entityMap = new Map(entitiesList.map((entity) => [entity.id, entity.osm_id]));
+
 		entitiesShape.subscribe((entities: ShapeData) => {
 			const rows: entitiesShapeType[] = entities.rows;
-			if (rows && Array.isArray(rows)) {
-				entitiesStatusList = rows?.map((entity) => {
-					return {
-						...entity,
-						osmid: entitiesList?.find((entityx) => entityx.id === entity.entity_id)?.osm_id,
-					};
-				});
+			if (Array.isArray(rows)) {
+				entitiesStatusList = rows.map((entity) => ({
+					...entity,
+					osmid: entityMap.get(entity.entity_id) || null,
+				}));
 			}
 		});
 	}
