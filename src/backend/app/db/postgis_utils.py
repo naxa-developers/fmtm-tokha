@@ -355,8 +355,8 @@ async def get_next_osm_id():
         settings.FMTM_DB_URL.unicode_string()
     ) as db:
         async with db.cursor() as cur:
-            cur.execute("SELECT nextval('osm_id_seq')")
-            return cur.fetchone()[0]
+            await cur.execute("SELECT nextval('osm_id_seq')")
+            return await cur.fetchone()[0]
 ####
 
 
