@@ -356,7 +356,8 @@ async def get_next_osm_id():
     ) as db:
         async with db.cursor() as cur:
             await cur.execute("SELECT nextval('osm_id_seq')")
-            return await cur.fetchone()[0]
+            row = await cur.fetchone()
+            return row[0] if row else None
 ####
 
 
