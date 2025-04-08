@@ -103,7 +103,7 @@ async def append_required_geojson_properties(
     featcol_single_geom_type = featcol_keep_single_geom_type(featcol)
 
     if featcol_single_geom_type:
-        processed_featcol = add_required_geojson_properties(featcol_single_geom_type)
+        processed_featcol = await add_required_geojson_properties(featcol_single_geom_type)
         headers = {
             "Content-Disposition": ("attachment; filename=geojson_withtags.geojson"),
             "Content-Type": "application/media",

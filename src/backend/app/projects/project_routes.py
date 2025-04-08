@@ -904,7 +904,7 @@ async def add_new_entity(
             )
 
         # Add required properties and extract entity data
-        featcol = add_required_geojson_properties(geojson)
+        featcol = await add_required_geojson_properties(geojson)
         featcol.get("features")[0]["properties"].pop("submission_ids")
         properties = list(featcol["features"][0]["properties"].keys())
         task_geojson = await split_geojson_by_task_areas(db, featcol, project.id)

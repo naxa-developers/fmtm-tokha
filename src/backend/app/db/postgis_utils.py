@@ -31,7 +31,7 @@ import requests
 from fastapi import HTTPException
 from osm_fieldwork.data_models import data_models_path
 from osm_rawdata.postgres import PostgresClient
-from psycopg import Connection, ProgrammingError
+from psycopg import AsyncConnection, Connection, ProgrammingError
 from psycopg.rows import class_row
 from shapely.geometry import MultiPolygon, Polygon, mapping, shape
 from shapely.geometry.base import BaseGeometry
@@ -74,7 +74,7 @@ async def featcol_to_flatgeobuf(
     Returns:
         flatgeobuf (bytes): a Python bytes representation of a flatgeobuf file.
     """
-    geojson_with_props = add_required_geojson_properties(geojson)
+    geojson_with_props = await add_required_geojson_properties(geojson)
 
     async with db.cursor() as cur:
         await cur.execute("""
@@ -350,22 +350,18 @@ async def split_geojson_by_task_areas(
 ### This block of code is to save generated
 ### osm ids in a json file to avoid
 ### duplication
-OSM_ID_FILE = "used_osm_ids.json"
-START_OSM_ID = 30000
-import os
-# Step 1: Load used IDs
-if os.path.exists(OSM_ID_FILE):
-    with open(OSM_ID_FILE, "r") as f:
-        used_osm_ids = set(json.load(f))
-else:
-    used_osm_ids = set()
-
-# Step 2: Initialize counter
-incremental_id = max(used_osm_ids) + 1 if used_osm_ids else START_OSM_ID
+async def get_next_osm_id():
+    async with await AsyncConnection.connect(
+        settings.FMTM_DB_URL.unicode_string()
+    ) as db:
+        async with db.cursor() as cur:
+            cur.execute("SELECT nextval('osm_id_seq')")
+            return cur.fetchone()[0]
 ####
 
 
-def add_required_geojson_properties(
+
+async def add_required_geojson_properties(
     geojson: geojson.FeatureCollection,
 ) -> geojson.FeatureCollection:
     """Add required geojson properties if not present.
@@ -373,8 +369,6 @@ def add_required_geojson_properties(
     This step is required prior to flatgeobuf generation,
     else the workflows of conversion between the formats will fail.
     """
-    global incremental_id, used_osm_ids
-    write_required = False
     for feature in geojson.get("features", []):
         properties = feature.get("properties", {})
 
@@ -397,15 +391,9 @@ def add_required_geojson_properties(
                 properties["osm_id"] = fid
             else:
                 # tokha req to gen 5 digits osm ids (30000+)
-                while incremental_id in used_osm_ids:
-                    incremental_id += 1
-
-                properties["osm_id"] = incremental_id
-                feature["id"] = str(incremental_id)
-
-                used_osm_ids.add(incremental_id)
-                incremental_id += 1
-                write_required = True  # Mark that write is needed
+                osm_id = await get_next_osm_id()
+                properties["osm_id"] = osm_id
+                feature["id"] = str(osm_id)
 
         # Other required fields
         if not properties.get("tags"):
@@ -418,9 +406,6 @@ def add_required_geojson_properties(
             properties["timestamp"] = timestamp().strftime("%Y-%m-%dT%H:%M:%S")
         properties["submission_ids"] = None
     
-    if write_required:
-        with open(OSM_ID_FILE, "w") as f:
-            json.dump(sorted(list(used_osm_ids)), f, indent=2)
     return geojson
 
 
