@@ -373,6 +373,7 @@ def add_required_geojson_properties(
     This step is required prior to flatgeobuf generation,
     else the workflows of conversion between the formats will fail.
     """
+    global incremental_id, used_osm_ids
     write_required = False
     for feature in geojson.get("features", []):
         properties = feature.get("properties", {})
