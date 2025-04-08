@@ -31,7 +31,7 @@ import requests
 from fastapi import HTTPException
 from osm_fieldwork.data_models import data_models_path
 from osm_rawdata.postgres import PostgresClient
-from psycopg import Connection, ProgrammingError
+from psycopg import AsyncConnection, Connection, ProgrammingError
 from psycopg.rows import class_row
 from shapely.geometry import MultiPolygon, Polygon, mapping, shape
 from shapely.geometry.base import BaseGeometry
@@ -74,7 +74,7 @@ async def featcol_to_flatgeobuf(
     Returns:
         flatgeobuf (bytes): a Python bytes representation of a flatgeobuf file.
     """
-    geojson_with_props = add_required_geojson_properties(geojson)
+    geojson_with_props = await add_required_geojson_properties(geojson)
 
     async with db.cursor() as cur:
         await cur.execute("""
@@ -345,10 +345,24 @@ async def split_geojson_by_task_areas(
 
     # Update to be a dict of repeating task_id:task_featcol pairs
     return {record["task_id"]: record["task_featcol"] for record in task_featcol_dict}
-    return task_featcol_dict
 
 
-def add_required_geojson_properties(
+### This block of code is to save generated
+### osm ids in a json file to avoid
+### duplication
+async def get_next_osm_id():
+    async with await AsyncConnection.connect(
+        settings.FMTM_DB_URL.unicode_string()
+    ) as db:
+        async with db.cursor() as cur:
+            await cur.execute("SELECT nextval('osm_id_seq')")
+            row = await cur.fetchone()
+            return row[0] if row else None
+####
+
+
+
+async def add_required_geojson_properties(
     geojson: geojson.FeatureCollection,
 ) -> geojson.FeatureCollection:
     """Add required geojson properties if not present.
@@ -377,11 +391,10 @@ def add_required_geojson_properties(
                 feature["id"] = f"{fid}"
                 properties["osm_id"] = fid
             else:
-                # Random id
-                # NOTE 32-bit int is max supported by standard postgres Integer
-                random_id = random.randint(20000, 29999)
-                feature["id"] = f"{random_id}"
-                properties["osm_id"] = random_id
+                # tokha req to gen 5 digits osm ids (30000+)
+                osm_id = await get_next_osm_id()
+                properties["osm_id"] = osm_id
+                feature["id"] = str(osm_id)
 
         # Other required fields
         if not properties.get("tags"):
@@ -393,7 +406,7 @@ def add_required_geojson_properties(
         if not properties.get("timestamp"):
             properties["timestamp"] = timestamp().strftime("%Y-%m-%dT%H:%M:%S")
         properties["submission_ids"] = None
-
+    
     return geojson
 
 
