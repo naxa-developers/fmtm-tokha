@@ -345,7 +345,24 @@ async def split_geojson_by_task_areas(
 
     # Update to be a dict of repeating task_id:task_featcol pairs
     return {record["task_id"]: record["task_featcol"] for record in task_featcol_dict}
-    return task_featcol_dict
+
+
+### This block of code is to save generated
+### osm ids in a json file to avoid
+### duplication
+OSM_ID_FILE = "used_osm_ids.json"
+START_OSM_ID = 30000
+import os
+# Step 1: Load used IDs
+if os.path.exists(OSM_ID_FILE):
+    with open(OSM_ID_FILE, "r") as f:
+        used_osm_ids = set(json.load(f))
+else:
+    used_osm_ids = set()
+
+# Step 2: Initialize counter
+incremental_id = max(used_osm_ids) + 1 if used_osm_ids else START_OSM_ID
+####
 
 
 def add_required_geojson_properties(
@@ -356,6 +373,7 @@ def add_required_geojson_properties(
     This step is required prior to flatgeobuf generation,
     else the workflows of conversion between the formats will fail.
     """
+    write_required = False
     for feature in geojson.get("features", []):
         properties = feature.get("properties", {})
 
@@ -377,11 +395,16 @@ def add_required_geojson_properties(
                 feature["id"] = f"{fid}"
                 properties["osm_id"] = fid
             else:
-                # Random id
-                # NOTE 32-bit int is max supported by standard postgres Integer
-                random_id = random.randint(20000, 29999)
-                feature["id"] = f"{random_id}"
-                properties["osm_id"] = random_id
+                # tokha req to gen 5 digits osm ids (30000+)
+                while incremental_id in used_osm_ids:
+                    incremental_id += 1
+
+                properties["osm_id"] = incremental_id
+                feature["id"] = str(incremental_id)
+
+                used_osm_ids.add(incremental_id)
+                incremental_id += 1
+                write_required = True  # Mark that write is needed
 
         # Other required fields
         if not properties.get("tags"):
@@ -393,7 +416,10 @@ def add_required_geojson_properties(
         if not properties.get("timestamp"):
             properties["timestamp"] = timestamp().strftime("%Y-%m-%dT%H:%M:%S")
         properties["submission_ids"] = None
-
+    
+    if write_required:
+        with open(OSM_ID_FILE, "w") as f:
+            json.dump(sorted(list(used_osm_ids)), f, indent=2)
     return geojson
 
 
