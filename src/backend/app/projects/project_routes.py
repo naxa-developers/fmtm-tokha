@@ -823,7 +823,7 @@ async def update_project_form(
         xform_id,
         project.odkid,
         xlsform,
-        category,
+        # category,
         project.odk_credentials,
     )
 
