@@ -26,7 +26,7 @@ from loguru import logger as log
 from psycopg import Connection
 
 from app.auth.auth_deps import login_required
-from app.auth.auth_schemas import AuthUser
+from app.auth.auth_schemas import AuthUser, ProjectUserDict
 from app.auth.roles import project_manager
 from app.central import central_crud
 from app.db.database import db_conn
@@ -112,4 +112,46 @@ async def refresh_appuser_token(
         raise HTTPException(
             status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
             detail=msg,
+        ) from e
+
+
+@router.delete("/entity/{entity_uuid}")
+async def delete_odk_entity(
+    entity_uuid: str,
+    project_user_dict: Annotated[
+        ProjectUserDict, Depends(project_manager)
+    ],
+    dataset_name: str = "features",
+):
+    """Delete an Entity from ODK."""
+    # TODO: The user that created the entity should also be able to delete it.
+    try:
+        project = project_user_dict.get("project")
+        project_odk_id = project.odkid
+        project_odk_creds = project.odk_credentials
+
+        # Call the refactored delete_entity function
+        success = await central_crud.delete_entity(
+            odk_creds=project_odk_creds,
+            odk_id=project_odk_id,
+            entity_uuid=entity_uuid,
+            dataset_name=dataset_name,
+        )
+
+        if not success:
+            raise HTTPException(
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                detail="Entity deletion unsuccessful",
+            )
+
+        return {"detail": "Entity deleted successfully", "uuid": entity_uuid}
+
+    except HTTPException as http_err:
+        log.error(f"HTTP error during deletion: {http_err.detail}")
+        raise
+    except Exception as e:
+        log.exception("Unexpected error during entity deletion")
+        raise HTTPException(
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            detail="Entity deletion failed",
         ) from e

@@ -643,6 +643,34 @@ async def create_entity(
         raise
 
 
+async def delete_entity(
+    odk_creds: central_schemas.ODKCentralDecrypted,
+    odk_id: int,
+    entity_uuid: str,
+    dataset_name: str = "features",
+) -> bool:
+    """Delete an Entity in ODK."""
+    log.info(f"Deleting ODK Entity (UUID: {entity_uuid}) from dataset '{dataset_name}' (ODK ID: {odk_id})")
+    try:
+        async with central_deps.get_odk_dataset(odk_creds) as odk_central:
+            success = await odk_central.deleteEntity(
+                projectId=odk_id,
+                datasetName=dataset_name,
+                entityUuid=entity_uuid,
+            )
+
+        if not success:
+            log.error(f"Failed to delete entity {entity_uuid}")
+            return False
+
+        log.info(f"Entity {entity_uuid} successfully deleted from ODK")
+        return True
+
+    except Exception as e:
+        log.exception(f"Failed to delete entity {entity_uuid} in ODK: {str(e)}")
+        raise
+
+
 async def get_entities_geojson(
     odk_creds: central_schemas.ODKCentralDecrypted,
     odk_id: int,
