@@ -39,6 +39,7 @@ import { Style, Stroke } from 'ol/style';
 import MapStyles from '@/hooks/MapStyles';
 import { EntityOsmMap } from '@/models/project/projectModel';
 import { entity_state } from '@/types/enums';
+import SearchInput from '@/components/ProjectDetailsV2/SearchInput';
 
 const ProjectDetailsV2 = () => {
   useDocumentTitle('Project Details');
@@ -145,6 +146,8 @@ const ProjectDetailsV2 = () => {
         task_state: taskObj?.task_state,
         actioned_by_uid: taskObj?.actioned_by_uid,
         actioned_by_username: taskObj?.actioned_by_username,
+        task_id: taskObj?.id,
+        task_index: taskObj?.index,
       },
     }));
 
@@ -327,6 +330,16 @@ const ProjectDetailsV2 = () => {
     syncTaskState();
   };
 
+  const [searchText, setSearchText] = useState('');
+  const [entitySearchList, setEntitySearchList] = useState([]);
+  const [selectedEntity, setSelectedEntity] = useState(null);
+
+  useEffect(() => {
+    if (!searchText) return;
+    const entityList = entityOsmMap?.filter((entity) => entity.osm_id.toString().includes(searchText.toString()));
+    setEntitySearchList(entityList);
+  }, [searchText]);
+
   return (
     <div className="fmtm-bg-[#f5f5f5] !fmtm-h-[100dvh] sm:!fmtm-h-full">
       {/* Customized Modal For Generate Tiles */}
@@ -479,6 +492,37 @@ const ProjectDetailsV2 = () => {
                 windowSize.width <= 768 ? '!fmtm-h-[100dvh]' : '!fmtm-h-full'
               }`}
             >
+              <div className="fmtm-absolute fmtm-top-2 fmtm-left-3 fmtm-z-50">
+                <SearchInput
+                  inputValue={searchText}
+                  data={entitySearchList || []}
+                  isOpen={entitySearchList?.length > 0}
+                  onClear={() => {}}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setSearchText(value);
+                  }}
+                  placeholder="Search by OSM ID"
+                  selectedValue={selectedEntity}
+                  onSelect={async (value) => {
+                    const selectedEntity = value;
+                    const layers = map?.getLayers();
+
+                    let taskLayer;
+                    layers.forEach((layer) => {
+                      if (layer.getProperties()?.name === 'project-area') {
+                        taskLayer = layer;
+                      }
+                    });
+                    const taskFeatures = await taskLayer?.getSource().getFeatures();
+                    const feature = taskFeatures.find((feature) => {
+                      return feature.getProperties()?.task_index === selectedEntity?.task_id;
+                    });
+                    projectClickOnTaskArea(feature.getProperties(), feature);
+                    setSelectedEntity(selectedEntity);
+                  }}
+                />
+              </div>
               <LayerSwitcherControl visible={customBasemapUrl ? 'custom' : 'osm'} pmTileLayerUrl={customBasemapUrl} />
 
               {taskBoundariesLayer && taskBoundariesLayer?.features?.length > 0 && (
